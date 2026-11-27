@@ -16,3 +16,11 @@ __pycache__/
 .DS_Store
 .vscode/
 .idea/
+
+# MAAS admin password + API key, Terraform state (holds iDRAC credentials) and provider cache.
+.maas/
+terraform/**/.terraform/
+*.tfstate
+*.tfstate.*
+terraform/**/terraform.tfvars
+terraform/**/tfplan

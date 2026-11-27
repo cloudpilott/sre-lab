@@ -457,6 +457,113 @@ EOH
   esac
 }
 
+# ---- Bare-metal provisioning layer: MAAS controller VM + Terraform -----------------
+# A real MAAS (region + rack) in its own VM, configured entirely by Terraform (terraform/maas).
+# No PXE-bootable hardware on a Mac, so the Dell fleet is modelled in Terraform (plan-only) and the
+# k3s VMs are enrolled as already-deployed machines (MAAS "brownfield" import). See maas/README.md.
+MAAS_VM="${MAAS_VM:-maas}"
+MAAS_CPUS="${MAAS_CPUS:-2}"
+MAAS_MEM="${MAAS_MEM:-4G}"            # 3G ran out of memory (MAAS 3.7 = region + rack + Temporal + PostgreSQL)
+MAAS_DISK="${MAAS_DISK:-25G}"
+MAAS_DIR="$PWD/.maas"              # admin password + API key (gitignored)
+MAAS_TF="terraform/maas"
+
+maas_url() { echo "http://$(ip_of "$MAAS_VM"):5240/MAAS"; }
+# multipass exec sometimes never returns after the remote command has finished: cap every call.
+mpx() { local t="$1"; shift; perl -e 'alarm shift; exec @ARGV' "$t" multipass exec "$@"; }
+maas_cli() { mpx 120 "$MAAS_VM" -- maas admin "$@"; }
+maas_env() {
+  [[ -s $MAAS_DIR/api-key ]] || die "no MAAS API key yet; run: ./lab.sh maas up"
+  export MAAS_API_URL; MAAS_API_URL="$(maas_url)"
+  export MAAS_API_KEY; MAAS_API_KEY="$(cat "$MAAS_DIR/api-key")"
+  export TF_VAR_rack_controller_hostname="$MAAS_VM"
+  # After ./lab.sh maas enroll, let Terraform tag the imported k3s machines.
+  [[ -f $MAAS_DIR/enrolled ]] && export TF_VAR_tag_lab_nodes=true || true
+}
+maas_machines() {
+  maas_cli machines read | python3 -c '
+import json, sys
+ms = json.load(sys.stdin)
+print("%-10s %-12s %-14s %-10s %s" % ("HOSTNAME", "STATUS", "POOL", "ZONE", "TAGS"))
+for m in sorted(ms, key=lambda m: m["hostname"]):
+    print("%-10s %-12s %-14s %-10s %s" % (m["hostname"], m["status_name"], m["pool"]["name"],
+          m["zone"]["name"], ",".join(m["tag_names"]) or "-"))
+print("(%d machines)" % len(ms))'
+}
+
+maas() {
+  local cmd="${1:-help}"; shift || true
+  case $cmd in
+    up)
+      need multipass
+      if ! multipass info "$MAAS_VM" >/dev/null 2>&1; then
+        log "Launching $MAAS_VM ($MAAS_CPUS vCPU, $MAAS_MEM RAM, $MAAS_DISK disk)"
+        multipass launch "$IMAGE" --name "$MAAS_VM" --cpus "$MAAS_CPUS" --memory "$MAAS_MEM" --disk "$MAAS_DISK" --timeout 900 \
+          || multipass info "$MAAS_VM" >/dev/null 2>&1 || die "launch of $MAAS_VM failed"
+      fi
+      wait_vm "$MAAS_VM"
+      mkdir -p "$MAAS_DIR"; chmod 700 "$MAAS_DIR"
+      [[ -s $MAAS_DIR/admin-password ]] || { openssl rand -base64 18 | tr -d '/+=' > "$MAAS_DIR/admin-password"; chmod 600 "$MAAS_DIR/admin-password"; }
+      log "Installing MAAS in $MAAS_VM (first run downloads ~500 MB of snaps)"
+      multipass transfer maas/bootstrap.sh "$MAAS_VM:/home/ubuntu/bootstrap.sh"
+      multipass exec "$MAAS_VM" -- env MAAS_URL="$(maas_url)" MAAS_ADMIN_PASSWORD="$(cat "$MAAS_DIR/admin-password")" \
+        bash /home/ubuntu/bootstrap.sh > "$MAAS_DIR/api-key.tmp"
+      mv "$MAAS_DIR/api-key.tmp" "$MAAS_DIR/api-key"; chmod 600 "$MAAS_DIR/api-key"
+      maas ui
+      echo; echo "Next: ./lab.sh maas tf init && ./lab.sh maas tf plan" ;;
+    status)
+      multipass info "$MAAS_VM" | awk '/^(Name|State|IPv4|Memory usage)/'
+      echo; printf 'API: '; curl -s -o /dev/null -w '%{http_code}\n' "$(maas_url)/api/2.0/version/" || true
+      printf 'Boot images importing: '; maas_cli boot-resources is-importing 2>/dev/null || echo "?"
+      echo; maas_machines ;;
+    machines) maas_machines ;;
+    ui)  echo "  MAAS UI   $(maas_url)/   user: admin   password: cat .maas/admin-password" ;;
+    cli) maas_cli "$@" ;;                         # e.g. ./lab.sh maas cli fabrics read
+    enroll)
+      # Brownfield import: register running VMs as Deployed machines and upload their hardware inventory.
+      local url key n; url="$(maas_url)"; key="$(cat "$MAAS_DIR/api-key")"
+      for n in "${@:-${NODES[@]}}"; do
+        log "Enrolling $n as a deployed machine"
+        mpx 600 "$n" -- bash -c '
+          set -e; cd /tmp
+          curl -fsSO "$1/maas-run-scripts" && chmod +x maas-run-scripts
+          [ -f "$2-creds.yaml" ] || sudo ./maas-run-scripts register-machine --hostname "$2" "$1" "$3"
+          sudo ./maas-run-scripts report-results --config "$2-creds.yaml"' _ "$url" "$n" "$key"
+      done
+      touch "$MAAS_DIR/enrolled"
+      maas_machines
+      echo; echo "Known limit: on k3s nodes MAAS can't store the hardware data (commissioning shows Failed)."
+      echo "flannel.1 (10.42.x.0/32) and cni0 (10.42.x.0/24) are nested subnets on one host, which MAAS rejects."
+      echo "Details: ./lab.sh maas cli events query hostname=w1 limit=2"
+      echo; echo "Tag them from Terraform: ./lab.sh maas tf apply   (tag_lab_nodes is now on)" ;;
+    tf)
+      need terraform; maas_env
+      terraform -chdir="$MAAS_TF" "${@:-plan}" ;;
+    fleet-plan)                                   # show what Terraform would do to a real Dell fleet
+      need terraform; maas_env
+      terraform -chdir="$MAAS_TF" plan -var enroll_dell_fleet=true -var deploy_dell_fleet=true -var idrac_password=plan-only ;;
+    shell) multipass shell "$MAAS_VM" ;;
+    stop)  multipass stop "$MAAS_VM" ;;
+    start) multipass start "$MAAS_VM" ;;
+    snapshot) local name="${1:-maas-$(date +%Y%m%d-%H%M)}"
+              multipass stop "$MAAS_VM"; multipass snapshot "$MAAS_VM" --name "$name"; multipass start "$MAAS_VM" ;;
+    down)
+      read -r -p "Delete VM $MAAS_VM and its Terraform state permanently? [y/N] " a
+      [[ $a == y || $a == Y ]] || exit 0
+      multipass delete --purge "$MAAS_VM"
+      rm -rf "$MAAS_DIR" "$MAAS_TF"/terraform.tfstate* "$MAAS_TF"/.terraform ;;
+    *) cat <<'EOF'
+./lab.sh maas up              create the maas VM, install MAAS 3.7 (region+rack), admin user, API key
+./lab.sh maas tf <args>       run terraform in terraform/maas with MAAS creds set (init|plan|apply|destroy|...)
+./lab.sh maas fleet-plan      terraform plan with the 14-server Dell fleet enrolled + deployed (plan only)
+./lab.sh maas enroll [vm...]  import running VMs (default cp1 w1 w2) as Deployed machines with hardware inventory
+./lab.sh maas status          VM, API, image import and machine list
+./lab.sh maas machines | ui | cli <args> | shell | stop | start | snapshot [name] | down
+The maas VM is not part of ./lab.sh stop|start|snapshot (k3s only): manage it with the commands above.
+EOF
+  esac
+}
+
 help() {
   cat <<'EOF'
 ./lab.sh prereqs          install multipass, kubectl, helm, k9s, k6 via brew
@@ -472,6 +579,7 @@ help() {
 ./lab.sh openstack help   OpenStack all-in-one (Kolla-Ansible) commands
 ./lab.sh gpu help         simulated 8x H100 fleet: GPU / InfiniBand fault drills
 ./lab.sh ceph help        simulated Ceph storage cluster (24 OSDs): storage fault drills
+./lab.sh maas help        bare-metal provisioning layer: MAAS controller VM driven by Terraform
 EOF
 }
 

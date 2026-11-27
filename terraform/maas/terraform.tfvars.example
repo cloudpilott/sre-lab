@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars (gitignored) to override defaults.
+site = "dc1"
+
+# Real DC only: rack controller has a NIC on the PXE VLAN.
+# enable_pxe_dhcp = true
+
+# Real DC only: iDRACs reachable from the rack controller.
+# enroll_dell_fleet = true
+# deploy_dell_fleet = true
+# idrac_user        = "root"
+# idrac_password    = set via TF_VAR_idrac_password from your secret store, never in this file
+
+# ssh_public_key = "ssh-ed25519 AAAA... you@laptop"

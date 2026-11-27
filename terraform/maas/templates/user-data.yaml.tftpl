@@ -1,0 +1,21 @@
+#cloud-config
+# Hand-off from MAAS to configuration management: just enough for Ansible to take over.
+hostname: ${hostname}
+timezone: UTC
+package_update: true
+packages: [chrony, python3, lldpd]
+users:
+  - default
+  - name: ops
+    groups: [sudo]
+    shell: /bin/bash
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+%{ if ssh_key != "" ~}
+    ssh_authorized_keys: ["${ssh_key}"]
+%{ endif ~}
+write_files:
+  - path: /etc/ansible/facts.d/lab.fact
+    content: |
+      {"role": "${role}", "model": "${model}", "provisioned_by": "maas+terraform"}
+runcmd:
+  - systemctl enable --now chrony lldpd
