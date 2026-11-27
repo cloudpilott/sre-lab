@@ -3,12 +3,12 @@
 
     python3 docs/make_architecture.py
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --hide-scrollbars \
-        --force-device-scale-factor=1.5 --window-size=1600,1040 --screenshot=docs/architecture.png "file://$PWD/docs/architecture.svg"
+        --force-device-scale-factor=1.5 --window-size=1600,1250 --screenshot=docs/architecture.png "file://$PWD/docs/architecture.svg"
 """
 import os
 from xml.sax.saxutils import escape
 
-W, H = 1600, 1040
+W, H = 1600, 1250
 FONT = "Helvetica Neue, Helvetica, Arial, sans-serif"
 MONO = "Menlo, SF Mono, Consolas, monospace"
 
@@ -19,6 +19,7 @@ C = dict(
     ceph="#d97706", ceph_bg="#fffbeb", ceph_box="#fef3c7",
     stop="#9ca3af", stop_bg="#f3f4f6",
     fault="#dc2626", data="#ea580c", read="#6b7280",
+    plan="#0d9488", plan_bg="#f0fdfa",
 )
 
 out = []
@@ -31,7 +32,7 @@ def rect(x, y, w, h, fill, stroke, dash=False, r=8, sw=1.5):
 
 
 def text(x, y, s, size=13, weight="normal", color=None, anchor="start", mono=False, italic=False):
-    out.append('<text x="%g" y="%g" font-family="%s" font-size="%g" font-weight="%s" fill="%s" text-anchor="%s"%s>%s</text>'
+    out.append('<text x="%g" y="%g" font-family="%s" font-size="%g" font-weight="%s" fill="%s" text-anchor="%s"%s xml:space="preserve">%s</text>'
                % (x, y, MONO if mono else FONT, size, weight, color or C["ink"], anchor,
                   ' font-style="italic"' if italic else "", escape(s)))
 
@@ -68,37 +69,43 @@ def layer(y, h, title):
 # --------------------------------------------------------------------------------------------------------------
 out.append('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % (W, H, W, H))
 out.append("<defs>")
-for col in (C["real"], C["fault"], C["data"], C["read"], C["gpu"]):
+for col in (C["real"], C["fault"], C["data"], C["read"], C["gpu"], C["plan"]):
     out.append('<marker id="h-%s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
                '<path d="M0 0 L10 5 L0 10 z" fill="%s"/></marker>' % (col.strip("#"), col))
 out.append("</defs>")
 out.append('<rect width="100%" height="100%" fill="#ffffff"/>')
 text(20, 38, "Home SRE Lab", 24, "bold")
-text(205, 38, "k3s on a 16 GB Mac, with a simulated 8x H100 GPU fleet and a simulated 24-OSD Ceph cluster", 14, color=C["muted"])
+text(205, 38, "k3s on a 16 GB Mac: simulated 8x H100 fleet + 24-OSD Ceph, GPU acceptance testing, MAAS + Terraform provisioning", 14, color=C["muted"])
 
 # ---- Layer 1: host ------------------------------------------------------------------------------------------
-layer(55, 175, "LAYER 1 — Host: MacBook Pro M2, 16 GB RAM (~11 GB to VMs, ~5 GB for macOS)")
-box(40, 95, 240, 110, "Control & CLI", ["lab.sh (control script)", "kubectl · helm · k9s · k6"])
-box(350, 95, 300, 110, "Fault state (JSON files)", ["gpu/state.json", "ceph/state.json", "one source of truth for metrics + shells"],
-    mono_lines=False)
-box(690, 95, 290, 110, "Fake node shells (run on the Mac)",
-    ["gpusim: nvidia-smi, dmesg, dcgmi, ibstat,", "  perfquery, ibdiagnet, all_reduce_perf",
-     "cephsim: ceph, rados, smartctl, journalctl,", "  chronyc, ip, ping"], size=11.5, lh=15)
-box(1010, 95, 210, 110, "Browser", ["Grafana · Prometheus", "Alertmanager", "via nip.io URLs"])
+layer(55, 175, "LAYER 1 — Host: MacBook Pro M2, 16 GB RAM (k3s VMs 11 GB + maas VM 4 GB: stop maas when idle)")
+box(40, 95, 200, 110, "Control & CLI", ["lab.sh (control script)", "kubectl · helm · k9s · k6", "gpu/atp.py → ATP reports"],
+    size=11.5, lh=15)
+box(300, 95, 220, 110, "Fault state (JSON files)", ["gpu/state.json", "ceph/state.json", "source of truth for", "metrics + shells"],
+    size=11.5, lh=15)
+box(550, 95, 250, 110, "Fake node shells (on the Mac)",
+    ["gpusim: nvidia-smi, dcgmi, ibstat,", "  hpl, nvbandwidth, gdsio, flint",
+     "cephsim: ceph, rados, smartctl,", "  journalctl, chronyc, ip, ping"], size=11.5, lh=15)
+box(820, 95, 170, 110, "Terraform", ["terraform/maas", "network · zones", "pools · tags", "Dell fleet (plan)"], size=11.5, lh=15)
+box(1010, 95, 210, 110, "Browser", ["Grafana · Prometheus", "Alertmanager · MAAS UI", "via nip.io / :5240"])
 
-path([(280, 150), (348, 150)], C["fault"], dash=True, label="drill / fault\n/ clear", lx=314, ly=128, lanchor="middle")
-path([(650, 150), (688, 150)], C["read"], label="read", lx=669, ly=143, lanchor="middle")
+path([(240, 150), (298, 150)], C["fault"], dash=True, label="drill / fault\n/ clear", lx=269, ly=128, lanchor="middle")
+path([(520, 150), (548, 150)], C["read"])
 
 # ---- Layer 2: VMs ------------------------------------------------------------------------------------------
 layer(250, 100, "LAYER 2 — Virtualization: Multipass VMs on Apple Hypervisor.framework")
 # lab.sh -> Kubernetes API (drawn before cp1 so it disappears into it: the API server runs on cp1)
 path([(200, 205), (200, 403)], C["real"])
 path([(200, 366), (200, 366)], C["real"], head=False, label="kubectl → API: node status patches, cordon, pod restarts", lx=208, ly=368)
-box(40, 282, 300, 55, "cp1 · 2 vCPU / 4 GB", ["k3s server (API, control plane, sqlite)"])
-box(360, 282, 260, 55, "w1 · 2 vCPU / 3.5 GB", ["k3s agent"])
-box(660, 282, 240, 55, "w2 · 2 vCPU / 3.5 GB", ["k3s agent"])
-box(920, 282, 300, 55, "os-aio · 4 vCPU / 10 GB", ["OpenStack AIO · stopped, runs instead of k3s"],
-    fill=C["stop_bg"], stroke=C["stop"], dash=True)
+box(40, 278, 250, 60, "cp1 · 2 vCPU / 4 GB", ["k3s server: API, control plane", "MAAS: Deployed, tag k3s"], size=11.5, lh=15)
+box(310, 278, 190, 60, "w1 · 2 vCPU / 3.5 GB", ["k3s agent", "MAAS: Deployed, tag k3s"], size=11.5, lh=15)
+box(520, 278, 190, 60, "w2 · 2 vCPU / 3.5 GB", ["k3s agent", "MAAS: Deployed, tag k3s"], size=11.5, lh=15)
+box(730, 278, 260, 60, "maas · 2 vCPU / 4 GB + swap", ["MAAS 3.7 region + rack (snap)", "PostgreSQL (maas-test-db)"], size=11.5, lh=15)
+box(1010, 278, 210, 60, "os-aio · 4 vCPU / 10 GB", ["OpenStack AIO · stopped,", "runs instead of k3s"],
+    fill=C["stop_bg"], stroke=C["stop"], dash=True, size=11.5, lh=15)
+# Terraform -> MAAS API, and the brownfield import of the k3s VMs
+path([(905, 205), (905, 276)], C["plan"], label="MAAS API", lx=912, ly=262)
+path([(730, 330), (712, 330)], C["read"], dash=True)
 
 # ---- Layer 3: Kubernetes -----------------------------------------------------------------------------------
 layer(375, 255, "LAYER 3 — Kubernetes (k3s) workloads on cp1 / w1 / w2")
@@ -131,16 +138,16 @@ box(925, 505, 280, 62, "cephsim-exporter :9283 (job=\"ceph\")", ["ceph-mgr metri
 path([(1065, 483), (1065, 503)], C["fault"], dash=True, label="mounted", lx=1073, ly=497)
 
 # state.json -> ConfigMaps (lab.sh syncs them): through the gap between w1 and w2
-path([(640, 205), (640, 436)], C["fault"], dash=True)
-path([(640, 358), (1000, 358), (1000, 436)], C["fault"], dash=True, head=True,
-     label="lab.sh syncs state.json → ConfigMaps", lx=820, ly=352, lanchor="middle")
+path([(510, 205), (510, 358), (700, 358), (700, 436)], C["fault"], dash=True)
+path([(700, 358), (1000, 358), (1000, 436)], C["fault"], dash=True, head=True,
+     label="lab.sh syncs state.json → ConfigMaps", lx=850, ly=353, lanchor="middle")
 # exporters -> Prometheus (scrape)
 path([(625, 536), (600, 536), (600, 462), (577, 462)], C["real"])
 path([(1065, 567), (1065, 600), (600, 600), (600, 536)], C["real"], head=False,
      label="ServiceMonitor scrape every 30s", lx=835, ly=594, lanchor="middle")
 # Grafana / Prometheus -> browser
-path([(345, 405), (345, 240), (1180, 240), (1180, 207)], C["real"],
-     label="dashboards, PromQL, alerts", lx=900, ly=235, lanchor="middle")
+path([(300, 405), (300, 240), (1180, 240), (1180, 207)], C["real"],
+     label="dashboards, PromQL, alerts", lx=700, ly=235, lanchor="middle")
 
 # ---- Layer 4: simulated fleets ----------------------------------------------------------------------------
 layer(650, 370, "LAYER 4 — Simulated fleets: 14 KWOK fake nodes (real Node objects, no real hardware)")
@@ -161,6 +168,7 @@ text(410, 752, "8x H100 80GB SXM5", 12, color=C["muted"])
 text(410, 768, "8x ConnectX-7 NDR 400 Gb/s", 12, color=C["muted"])
 text(410, 784, "rail-optimized: GPU n ↔ mlx5_n", 12, color=C["muted"])
 text(410, 800, "zone rack-a / rack-b", 12, color=C["muted"])
+text(410, 816, "ATP: ./lab.sh gpu atp", 12, "bold", color=C["gpu"])
 box(52, 822, 330, 72, "ns ml · StatefulSet llm-train", ["8 pods, one per node", "each requests 8 nvidia.com/gpu + 8 rdma/ib"],
     fill="#ffffff", stroke=C["gpu"])
 rect(52, 940, 546, 40, C["gpu_box"], C["gpu"], r=6)
@@ -194,17 +202,40 @@ text(935, 974, "MTU 9000 on both", 11.5, color=C["muted"], anchor="middle")
 path([(382, 858), (778, 858)], C["data"], width=2.5,
      label="checkpoints (CephFS over public net)", lx=580, ly=850, lanchor="middle")
 
+# ---- Layer 5: bare-metal target modelled in Terraform ----------------------------------------------------------
+layer(1040, 190, "LAYER 5 — Bare-metal target, modelled in Terraform (plan-only): Dell fleet + DC network plan")
+text(1225, 1064, "./lab.sh maas fleet-plan", 12.5, "bold", color=C["plan"], anchor="end", mono=True)
+box(40, 1078, 370, 138, "8x Dell PowerEdge XE9680 (h100-01..08)",
+    ["8x H100 SXM5 each · pool gpu-compute", "zones dc1-rack-a / dc1-rack-b",
+     "power: Redfish via iDRAC 172.16.10.11-18", "deploy: Ubuntu noble + cloud-init → Ansible",
+     "tags: role-gpu · gpu-h100 (iommu=pt)"], fill=C["plan_bg"], stroke=C["plan"], dash=True, size=11.5, lh=16)
+box(430, 1078, 330, 138, "6x Dell PowerEdge R760xd (ceph-01..06)",
+    ["NVMe · pool ceph-storage", "2 per rack: dc1-rack-a / b / c", "power: Redfish via iDRAC .41-.46",
+     "commissioning: update_firmware,", "  configure_hba"], fill=C["plan_bg"], stroke=C["plan"], dash=True, size=11.5, lh=16)
+box(780, 1078, 440, 138, "MAAS network plan (terraform/maas/network.tf)",
+    ["oob       untagged  172.16.10.0/24  MTU 1500",
+     "pxe       untagged  172.16.20.0/22  MTU 1500",
+     "k8s       VLAN 30   172.16.30.0/24  MTU 1500",
+     "ceph-pub  VLAN 40   172.16.40.0/24  MTU 9000",
+     "ceph-clu  VLAN 41   172.16.41.0/24  MTU 9000",
+     "gpu-stor  VLAN 50   172.16.50.0/24  MTU 9000"], fill=C["plan_bg"], stroke=C["plan"], dash=True, size=11, lh=16,
+    mono_lines=True, tsize=12.5)
+# maas VM -> the modelled fleet, down the corridor between the layers and the side panel
+path([(960, 338), (960, 345), (1249, 345), (1249, 1147), (1222, 1147)], C["plan"], dash=True)
+
 # ---- side panel --------------------------------------------------------------------------------------------
-rect(1260, 55, 320, 965, "#ffffff", "#cbd5e1", r=10, sw=1.2)
+rect(1260, 55, 320, 1175, "#ffffff", "#cbd5e1", r=10, sw=1.2)
 text(1278, 82, "Legend", 15, "bold")
 items = [("box", C["real_box"], C["real"], False, "Real infrastructure & workloads"),
          ("box", C["gpu_bg"], C["gpu"], True, "Simulated GPU fleet"),
          ("box", C["ceph_bg"], C["ceph"], True, "Simulated Ceph cluster"),
          ("box", C["stop_bg"], C["stop"], True, "Stopped / alternative VM"),
+         ("box", C["plan_bg"], C["plan"], True, "Modelled in Terraform (plan only)"),
          ("arrow", C["fault"], None, True, "Fault injection path"),
          ("arrow", C["real"], None, False, "Telemetry & control"),
          ("arrow", C["data"], None, False, "Data (checkpoints)"),
-         ("arrow", C["read"], None, False, "Reads / fakes")]
+         ("arrow", C["read"], None, False, "Reads / fakes / enrolls"),
+         ("arrow", C["plan"], None, False, "Provisioning (MAAS API)")]
 for i, (kind, a, b, dash, label) in enumerate(items):
     y = 100 + i * 26
     if kind == "box":
@@ -213,12 +244,13 @@ for i, (kind, a, b, dash, label) in enumerate(items):
         path([(1280, y + 9), (1310, y + 9)], a, dash=dash)
     text(1322, y + 14, label, 12.5)
 
-text(1278, 330, "Fault drills", 15, "bold")
-blocks = [("GPU (15 with IB)", ["Xid 79 / 94 / 95 / 64 / 31", "ECC storm · thermal · power brake", "NVLink → Xid 74 · PCIe replays"]),
+text(1278, 380, "Fault drills", 15, "bold")
+blocks = [("GPU (19 with IB)", ["Xid 79 / 94 / 95 / 64 / 31", "ECC storm · thermal · power brake", "NVLink → Xid 74 · PCIe replays",
+                                "FW drift · FM mismatch · PCIe x8", "GDS compat mode"]),
           ("InfiniBand", ["port down · flapping · symbol errors", "degraded width · congestion"]),
           ("Ceph (11)", ["OSD crash · dead NVMe · nearfull", "full OSD · host down · slow ops", "mon disk full · clock skew",
                          "flags left set · inconsistent PG", "MTU mismatch"])]
-y = 356
+y = 406
 for title, lines in blocks:
     text(1278, y, title, 13, "bold", color=C["muted"])
     for l in lines:
@@ -231,7 +263,19 @@ y += 18
 rect(1278, y, 284, 104, "#f8fafc", "#cbd5e1", r=6)
 for i, l in enumerate(["./lab.sh gpu drill 2", "./lab.sh ceph drill 2", "investigate: Grafana,", "  alerts, kubectl, fake shells", "→ reveal → clear"]):
     text(1290, y + 20 + i * 18, l, 12, mono=True)
-y += 130
+y += 140
+text(1278, y, "Acceptance (ATP)", 15, "bold")
+y += 18
+rect(1278, y, 284, 104, "#f8fafc", "#cbd5e1", r=6)
+for i, l in enumerate(["./lab.sh gpu compliance", "./lab.sh gpu atp", "12 checks/node + NCCL 64 GPU", "root cause · timings ·", "  evidence → gpu/reports/"]):
+    text(1290, y + 20 + i * 18, l, 12, mono=True)
+y += 140
+text(1278, y, "Provisioning", 15, "bold")
+y += 18
+rect(1278, y, 284, 86, "#f8fafc", "#cbd5e1", r=6)
+for i, l in enumerate(["./lab.sh maas up", "./lab.sh maas tf apply", "./lab.sh maas enroll", "./lab.sh maas fleet-plan"]):
+    text(1290, y + 20 + i * 18, l, 12, mono=True)
+y += 112
 text(1278, y, "github.com/cloudpilott/sre-lab", 12, color=C["faint"])
 
 for x, y, s in TITLES:

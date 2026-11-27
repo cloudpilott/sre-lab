@@ -1,21 +1,26 @@
 # SRE Lab — MacBook Pro M2 / 16 GB
 
 A 3-node Kubernetes (k3s) cluster in Ubuntu VMs on your Mac, plus a working SRE toolchain:
-metrics, logs, dashboards, SLOs with burn-rate alerts, chaos engineering and load testing.
+metrics, logs, dashboards, SLOs with burn-rate alerts, chaos engineering and load testing. On top: a simulated
+8x H100 GPU fleet and 24-OSD Ceph cluster for fault drills, GPU acceptance testing (ATP) against a locked build
+standard, and a real MAAS controller driven by Terraform for bare-metal provisioning.
 
-![Architecture: Mac host, Multipass VMs, k3s workloads, and the simulated GPU and Ceph fleets](docs/architecture.png)
+![Architecture: Mac host, Multipass VMs (k3s + MAAS), k3s workloads, the simulated GPU and Ceph fleets, and the Dell fleet modelled in Terraform](docs/architecture.png)
 
 ```
 macOS (M2, 16 GB)
 └── Multipass (QEMU + Apple Hypervisor.framework)
     ├── cp1  2 vCPU / 4 GB    k3s server (control plane + etcd/sqlite)
     ├── w1   2 vCPU / 3.5 GB  k3s agent
-    └── w2   2 vCPU / 3.5 GB  k3s agent
-         ├── monitoring   Prometheus · Alertmanager · Grafana · Loki · Alloy · Sloth
-         ├── chaos-mesh   Chaos Mesh controller + daemons + dashboard
-         └── demo         podinfo (2–6 replicas, HPA, ServiceMonitor, SLOs)
+    ├── w2   2 vCPU / 3.5 GB  k3s agent
+    │    ├── monitoring   Prometheus · Alertmanager · Grafana · Loki · Alloy · Sloth
+    │    ├── chaos-mesh   Chaos Mesh controller + daemons + dashboard
+    │    ├── demo         podinfo (2–6 replicas, HPA, ServiceMonitor, SLOs)
+    │    └── gpu-sim / ceph-sim   exporters for the KWOK fake fleets (h100-01..08, ceph-01..06)
+    └── maas 2 vCPU / 4 GB    MAAS 3.7 region + rack, configured by Terraform (optional)
 ```
-~11 GB goes to the VMs, ~5 GB stays with macOS. Close heavy apps (Chrome, Docker Desktop) while the lab runs.
+The k3s VMs take ~11 GB, ~5 GB stays with macOS. The optional `maas` VM adds 4 GB: stop it when you're not using it.
+Close heavy apps (Chrome, Docker Desktop) while the lab runs.
 
 ## Quick start
 
@@ -53,8 +58,11 @@ dashboards/            Grafana dashboards as ConfigMaps
 chaos/                 Chaos Mesh experiments
 load/                  k6 scripts
 runbooks/              alert runbooks
-gpu/                   simulated H100 fleet: gpusim.py, k8s manifests, fault fixtures
+gpu/                   simulated H100 fleet: gpusim.py, atp.py (acceptance tests), locked versions, thresholds, fixtures
 ceph/                  simulated Ceph storage cluster: cephsim.py, k8s manifests, fault fixtures
+maas/                  MAAS controller VM bootstrap + README
+terraform/maas/        Terraform for MAAS: settings, zones, pools, network plan, tags, Dell fleet
+docs/                  architecture diagram (make_architecture.py -> .svg -> .png)
 EXERCISES.md           guided SRE drills
 ```
 
@@ -80,6 +88,20 @@ DCGM and InfiniBand metrics, and a fake node shell prints realistic `nvidia-smi`
 ```
 Details: `gpu/README.md`. Drills: EXERCISES.md level 5. Runbook: `runbooks/gpu-ib-faults.md`.
 
+### GPU acceptance testing (ATP)
+How a new or repaired node is proven before handover. The build standard is `gpu/locked-versions.json` (kernel, driver,
+Fabric Manager, CUDA, DCGM, VBIOS, DOCA-OFED, HCA firmware, GDS, BIOS, iDRAC). Pass/fail targets are in `gpu/atp-thresholds.json`.
+`gpu/atp.py` runs the real-style tools on each node and parses their output: versions, inventory, Fabric Manager,
+`nvidia-smi topo -m`, PCIe width, ECC/row remap, InfiniBand, `dcgmi diag -r 3`, `nvbandwidth`, NCCL, HPL and GDS, plus a
+64-GPU NCCL run. The report names the **root cause** per node, times every step and keeps the evidence.
+
+```bash
+./lab.sh gpu fault pcie-downtrain h100-02 3   # deployment faults: fw-drift, fm-mismatch, pcie-downtrain, gds-compat
+./lab.sh gpu compliance    # locked-version check only (~1-2 min modelled)
+./lab.sh gpu atp           # full ATP -> gpu/reports/atp-<time>.md + .json + .prom; exit 1 on any defect
+```
+Drills: EXERCISES.md level 7.
+
 ## Simulated Ceph storage (6 hosts, 24 NVMe OSDs)
 Six fake storage hosts join the cluster through KWOK (no real Ceph: that needs 3-4 GB more RAM). An exporter serves
 ceph-mgr metrics, and a fake admin shell prints realistic `ceph -s`, `ceph health detail`, `ceph osd df`, `rados`,
@@ -93,6 +115,24 @@ nearfull/full OSD, host down, mon disk full, clock skew, maintenance flags left 
 ```
 Details: `ceph/README.md`. Drills: EXERCISES.md level 6. Runbook: `runbooks/ceph-faults.md`.
 
+## Bare-metal provisioning: MAAS + Terraform
+How the hardware under all of this would be built in a data centre: Terraform declares the machines and network,
+MAAS powers servers on over Redfish (iDRAC), PXE-boots and commissions them, and deploys Ubuntu with cloud-init,
+handing over to Ansible. Here MAAS 3.7 (region + rack) runs for real in the `maas` VM, and Terraform (`canonical/maas`
+provider) configures it: settings, DNS domain, rack zones, resource pools, fabrics/VLANs/spaces/subnets with reserved and
+PXE ranges, and XPath hardware tags. A Mac can't PXE-boot servers, so the 14-server Dell fleet (8x XE9680, 6x R760xd) is
+modelled in Terraform and shown with `plan`, and the k3s VMs are imported as already-deployed machines.
+
+```bash
+brew install hashicorp/tap/terraform
+./lab.sh maas up            # maas VM + MAAS + admin user + API key (kept in .maas/, gitignored)
+./lab.sh maas tf init && ./lab.sh maas tf apply
+./lab.sh maas enroll        # import cp1 w1 w2 as Deployed machines (then tf apply tags them k3s)
+./lab.sh maas fleet-plan    # what Terraform would do to the Dell fleet
+./lab.sh maas status        # API, image import, machines;  ./lab.sh maas ui for the web UI
+```
+Known limit: MAAS can't store the k3s nodes' hardware inventory (flannel/cni0 nested subnets). Details: `maas/README.md`.
+
 ## OpenStack all-in-one (alternative to the k3s lab)
 OpenStack 2026.2 via Kolla-Ansible in a 4th VM, `os-aio` (4 vCPU / 10 GB). Run it **instead of** k3s, not beside it.
 
@@ -103,7 +143,7 @@ OpenStack 2026.2 via Kolla-Ansible in a 4th VM, `os-aio` (4 vCPU / 10 GB). Run i
 ./lab.sh openstack status     # services, agents, servers, Horizon URL
 ```
 Compute is emulated (`virt_type=qemu`; the M2 has no nested virtualization), so use tiny CirrOS guests.
-Files: `openstack/aio.sh` (runs inside the VM), `openstack/globals.yml.tpl`. Full SOP: section 10 of the lab SOP doc.
+Files: `openstack/aio.sh` (runs inside the VM), `openstack/globals.yml.tpl`.
 
 ---
 © 2026 cloudpilott. All rights reserved. Personal portfolio project, not accepting contributions.

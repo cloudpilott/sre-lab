@@ -1,225 +1,291 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1250" viewBox="0 0 1600 1250">
 <defs>
 <marker id="h-2563eb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/></marker>
 <marker id="h-dc2626" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#dc2626"/></marker>
 <marker id="h-ea580c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ea580c"/></marker>
 <marker id="h-6b7280" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/></marker>
 <marker id="h-7c3aed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7c3aed"/></marker>
+<marker id="h-0d9488" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0d9488"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#ffffff"/>
-<text x="20" y="38" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" fill="#1f2937" text-anchor="start">Home SRE Lab</text>
-<text x="205" y="38" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="normal" fill="#4b5563" text-anchor="start">k3s on a 16 GB Mac, with a simulated 8x H100 GPU fleet and a simulated 24-OSD Ceph cluster</text>
+<text x="20" y="38" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="24" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Home SRE Lab</text>
+<text x="205" y="38" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">k3s on a 16 GB Mac: simulated 8x H100 fleet + 24-OSD Ceph, GPU acceptance testing, MAAS + Terraform provisioning</text>
 <rect x="20" y="55" width="1220" height="175" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
-<rect x="40" y="95" width="240" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="50" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Control &amp; CLI</text>
-<text x="50" y="132" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">lab.sh (control script)</text>
-<text x="50" y="148" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">kubectl · helm · k9s · k6</text>
-<rect x="350" y="95" width="300" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="360" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Fault state (JSON files)</text>
-<text x="360" y="132" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">gpu/state.json</text>
-<text x="360" y="148" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">ceph/state.json</text>
-<text x="360" y="164" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">one source of truth for metrics + shells</text>
-<rect x="690" y="95" width="290" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="700" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Fake node shells (run on the Mac)</text>
-<text x="700" y="131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">gpusim: nvidia-smi, dmesg, dcgmi, ibstat,</text>
-<text x="700" y="146" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">  perfquery, ibdiagnet, all_reduce_perf</text>
-<text x="700" y="161" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">cephsim: ceph, rados, smartctl, journalctl,</text>
-<text x="700" y="176" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">  chronyc, ip, ping</text>
+<rect x="40" y="95" width="200" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="50" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Control &amp; CLI</text>
+<text x="50" y="131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">lab.sh (control script)</text>
+<text x="50" y="146" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">kubectl · helm · k9s · k6</text>
+<text x="50" y="161" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">gpu/atp.py → ATP reports</text>
+<rect x="300" y="95" width="220" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="310" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Fault state (JSON files)</text>
+<text x="310" y="131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">gpu/state.json</text>
+<text x="310" y="146" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">ceph/state.json</text>
+<text x="310" y="161" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">source of truth for</text>
+<text x="310" y="176" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">metrics + shells</text>
+<rect x="550" y="95" width="250" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="560" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Fake node shells (on the Mac)</text>
+<text x="560" y="131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">gpusim: nvidia-smi, dcgmi, ibstat,</text>
+<text x="560" y="146" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">  hpl, nvbandwidth, gdsio, flint</text>
+<text x="560" y="161" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">cephsim: ceph, rados, smartctl,</text>
+<text x="560" y="176" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">  journalctl, chronyc, ip, ping</text>
+<rect x="820" y="95" width="170" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="830" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Terraform</text>
+<text x="830" y="131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">terraform/maas</text>
+<text x="830" y="146" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">network · zones</text>
+<text x="830" y="161" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">pools · tags</text>
+<text x="830" y="176" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">Dell fleet (plan)</text>
 <rect x="1010" y="95" width="210" height="110" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="1020" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Browser</text>
-<text x="1020" y="132" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">Grafana · Prometheus</text>
-<text x="1020" y="148" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">Alertmanager</text>
-<text x="1020" y="164" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">via nip.io URLs</text>
-<path d="M 280 150 L 348 150" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
-<text x="314" y="128" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">drill / fault</text>
-<text x="314" y="142" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">/ clear</text>
-<path d="M 650 150 L 688 150" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#h-6b7280)"/>
-<text x="669" y="143" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#6b7280" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">read</text>
+<text x="1020" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Browser</text>
+<text x="1020" y="132" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">Grafana · Prometheus</text>
+<text x="1020" y="148" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">Alertmanager · MAAS UI</text>
+<text x="1020" y="164" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">via nip.io / :5240</text>
+<path d="M 240 150 L 298 150" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
+<text x="269" y="128" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">drill / fault</text>
+<text x="269" y="142" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">/ clear</text>
+<path d="M 520 150 L 548 150" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#h-6b7280)"/>
 <rect x="20" y="250" width="1220" height="100" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
 <path d="M 200 205 L 200 403" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
 <path d="M 200 366 L 200 366" fill="none" stroke="#2563eb" stroke-width="2"/>
 <text x="208" y="368" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#2563eb" text-anchor="start" stroke="#ffffff" stroke-width="4" paint-order="stroke">kubectl → API: node status patches, cordon, pod restarts</text>
-<rect x="40" y="282" width="300" height="55" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="50" y="301" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">cp1 · 2 vCPU / 4 GB</text>
-<text x="50" y="319" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">k3s server (API, control plane, sqlite)</text>
-<rect x="360" y="282" width="260" height="55" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="370" y="301" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">w1 · 2 vCPU / 3.5 GB</text>
-<text x="370" y="319" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">k3s agent</text>
-<rect x="660" y="282" width="240" height="55" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="670" y="301" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">w2 · 2 vCPU / 3.5 GB</text>
-<text x="670" y="319" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">k3s agent</text>
-<rect x="920" y="282" width="300" height="55" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="930" y="301" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">os-aio · 4 vCPU / 10 GB</text>
-<text x="930" y="319" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">OpenStack AIO · stopped, runs instead of k3s</text>
+<rect x="40" y="278" width="250" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="50" y="297" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">cp1 · 2 vCPU / 4 GB</text>
+<text x="50" y="314" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">k3s server: API, control plane</text>
+<text x="50" y="329" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">MAAS: Deployed, tag k3s</text>
+<rect x="310" y="278" width="190" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="320" y="297" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">w1 · 2 vCPU / 3.5 GB</text>
+<text x="320" y="314" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">k3s agent</text>
+<text x="320" y="329" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">MAAS: Deployed, tag k3s</text>
+<rect x="520" y="278" width="190" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="530" y="297" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">w2 · 2 vCPU / 3.5 GB</text>
+<text x="530" y="314" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">k3s agent</text>
+<text x="530" y="329" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">MAAS: Deployed, tag k3s</text>
+<rect x="730" y="278" width="260" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="740" y="297" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">maas · 2 vCPU / 4 GB + swap</text>
+<text x="740" y="314" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">MAAS 3.7 region + rack (snap)</text>
+<text x="740" y="329" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">PostgreSQL (maas-test-db)</text>
+<rect x="1010" y="278" width="210" height="60" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="1020" y="297" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">os-aio · 4 vCPU / 10 GB</text>
+<text x="1020" y="314" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">OpenStack AIO · stopped,</text>
+<text x="1020" y="329" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">runs instead of k3s</text>
+<path d="M 905 205 L 905 276" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#h-0d9488)"/>
+<text x="912" y="262" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#0d9488" text-anchor="start" stroke="#ffffff" stroke-width="4" paint-order="stroke">MAAS API</text>
+<path d="M 730 330 L 712 330" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-6b7280)"/>
 <rect x="20" y="375" width="1220" height="255" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
 <rect x="40" y="405" width="200" height="92" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="50" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">kube-system</text>
-<text x="50" y="442" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">API server (on cp1)</text>
-<text x="50" y="458" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">KWOK controller:</text>
-<text x="50" y="474" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">fakes 14 kubelets</text>
+<text x="50" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">kube-system</text>
+<text x="50" y="442" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">API server (on cp1)</text>
+<text x="50" y="458" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">KWOK controller:</text>
+<text x="50" y="474" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">fakes 14 kubelets</text>
 <rect x="40" y="505" width="200" height="50" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="50" y="524" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">chaos-mesh</text>
-<text x="50" y="542" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">controller + daemons</text>
+<text x="50" y="524" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">chaos-mesh</text>
+<text x="50" y="542" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">controller + daemons</text>
 <rect x="40" y="563" width="200" height="55" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="50" y="582" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">demo</text>
-<text x="50" y="599" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">podinfo 2–6 replicas, HPA,</text>
-<text x="50" y="614" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">SLOs · k6 load from the Mac</text>
+<text x="50" y="582" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">demo</text>
+<text x="50" y="599" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">podinfo 2–6 replicas, HPA,</text>
+<text x="50" y="614" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">SLOs · k6 load from the Mac</text>
 <rect x="260" y="405" width="330" height="213" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="270" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">monitoring</text>
+<text x="270" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">monitoring</text>
 <rect x="275" y="438" width="150" height="48" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
-<text x="285" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Alertmanager</text>
-<text x="285" y="475" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">routes alerts</text>
+<text x="285" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Alertmanager</text>
+<text x="285" y="475" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">routes alerts</text>
 <rect x="440" y="438" width="135" height="48" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
-<text x="450" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Prometheus</text>
-<text x="450" y="475" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">rules: gpu, ceph</text>
+<text x="450" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Prometheus</text>
+<text x="450" y="475" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">rules: gpu, ceph</text>
 <rect x="440" y="500" width="135" height="48" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
-<text x="450" y="519" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Grafana</text>
-<text x="450" y="537" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">GPU · Ceph · SLO</text>
+<text x="450" y="519" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Grafana</text>
+<text x="450" y="537" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">GPU · Ceph · SLO</text>
 <rect x="275" y="500" width="150" height="48" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
-<text x="285" y="519" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="start">Loki · Alloy · Sloth</text>
-<text x="285" y="537" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">logs, SLO rules</text>
+<text x="285" y="519" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Loki · Alloy · Sloth</text>
+<text x="285" y="537" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">logs, SLO rules</text>
 <path d="M 440 462 L 427 462" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
 <path d="M 507 486 L 507 498" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
 <rect x="610" y="405" width="280" height="213" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="655" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">gpu-sim</text>
+<text x="655" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">gpu-sim</text>
 <rect x="625" y="438" width="250" height="45" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="635" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">ConfigMap gpusim-state</text>
+<text x="635" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">ConfigMap gpusim-state</text>
 <rect x="625" y="505" width="250" height="62" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="635" y="524" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">gpusim-exporter :9400</text>
-<text x="635" y="541" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">DCGM + InfiniBand metrics</text>
-<text x="635" y="556" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">for h100-01..08 (runs on a worker)</text>
+<text x="635" y="524" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">gpusim-exporter :9400</text>
+<text x="635" y="541" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">DCGM + InfiniBand metrics</text>
+<text x="635" y="556" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">for h100-01..08 (runs on a worker)</text>
 <path d="M 750 483 L 750 503" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
 <text x="758" y="497" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="start" stroke="#ffffff" stroke-width="4" paint-order="stroke">mounted</text>
 <rect x="910" y="405" width="310" height="213" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-<text x="920" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">ceph-sim</text>
+<text x="920" y="424" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">ceph-sim</text>
 <rect x="925" y="438" width="280" height="45" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="935" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">ConfigMap cephsim-state</text>
+<text x="935" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">ConfigMap cephsim-state</text>
 <rect x="925" y="505" width="280" height="62" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="935" y="524" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="start">cephsim-exporter :9283 (job="ceph")</text>
-<text x="935" y="541" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">ceph-mgr metrics for 24 OSDs,</text>
-<text x="935" y="556" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start">3 mons, pools, PGs (runs on a worker)</text>
+<text x="935" y="524" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">cephsim-exporter :9283 (job="ceph")</text>
+<text x="935" y="541" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">ceph-mgr metrics for 24 OSDs,</text>
+<text x="935" y="556" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">3 mons, pools, PGs (runs on a worker)</text>
 <path d="M 1065 483 L 1065 503" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
 <text x="1073" y="497" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="start" stroke="#ffffff" stroke-width="4" paint-order="stroke">mounted</text>
-<path d="M 640 205 L 640 436" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
-<path d="M 640 358 L 1000 358 L 1000 436" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
-<text x="820" y="352" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">lab.sh syncs state.json → ConfigMaps</text>
+<path d="M 510 205 L 510 358 L 700 358 L 700 436" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
+<path d="M 700 358 L 1000 358 L 1000 436" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
+<text x="850" y="353" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#dc2626" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">lab.sh syncs state.json → ConfigMaps</text>
 <path d="M 625 536 L 600 536 L 600 462 L 577 462" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
 <path d="M 1065 567 L 1065 600 L 600 600 L 600 536" fill="none" stroke="#2563eb" stroke-width="2"/>
 <text x="835" y="594" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#2563eb" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">ServiceMonitor scrape every 30s</text>
-<path d="M 345 405 L 345 240 L 1180 240 L 1180 207" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
-<text x="900" y="235" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#2563eb" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">dashboards, PromQL, alerts</text>
+<path d="M 300 405 L 300 240 L 1180 240 L 1180 207" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
+<text x="700" y="235" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#2563eb" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">dashboards, PromQL, alerts</text>
 <rect x="20" y="650" width="1220" height="370" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
 <path d="M 40 450 L 30 450 L 30 700 L 38 700" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#h-6b7280)"/>
 <text x="36" y="644" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#6b7280" text-anchor="start" stroke="#ffffff" stroke-width="4" paint-order="stroke">KWOK fakes the kubelets</text>
 <rect x="40" y="685" width="570" height="320" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="52" y="707" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c3aed" text-anchor="start">GPU fleet · 8 nodes (simulated)</text>
-<text x="52" y="745" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start">rack-a</text>
+<text x="52" y="707" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#7c3aed" text-anchor="start" xml:space="preserve">GPU fleet · 8 nodes (simulated)</text>
+<text x="52" y="745" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">rack-a</text>
 <rect x="110" y="722" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="142" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-01</text>
+<text x="142" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-01</text>
 <rect x="182" y="722" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="214" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-02</text>
+<text x="214" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-02</text>
 <rect x="254" y="722" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="286" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-03</text>
+<text x="286" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-03</text>
 <rect x="326" y="722" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="358" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-04</text>
-<text x="52" y="789" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start">rack-b</text>
+<text x="358" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-04</text>
+<text x="52" y="789" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">rack-b</text>
 <rect x="110" y="766" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="142" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-05</text>
+<text x="142" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-05</text>
 <rect x="182" y="766" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="214" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-06</text>
+<text x="214" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-06</text>
 <rect x="254" y="766" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="286" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-07</text>
+<text x="286" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-07</text>
 <rect x="326" y="766" width="64" height="34" rx="5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="358" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">h100-08</text>
-<text x="410" y="735" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start">per node:</text>
-<text x="410" y="752" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">8x H100 80GB SXM5</text>
-<text x="410" y="768" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">8x ConnectX-7 NDR 400 Gb/s</text>
-<text x="410" y="784" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">rail-optimized: GPU n ↔ mlx5_n</text>
-<text x="410" y="800" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">zone rack-a / rack-b</text>
+<text x="358" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">h100-08</text>
+<text x="410" y="735" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">per node:</text>
+<text x="410" y="752" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">8x H100 80GB SXM5</text>
+<text x="410" y="768" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">8x ConnectX-7 NDR 400 Gb/s</text>
+<text x="410" y="784" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">rail-optimized: GPU n ↔ mlx5_n</text>
+<text x="410" y="800" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">zone rack-a / rack-b</text>
+<text x="410" y="816" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#7c3aed" text-anchor="start" xml:space="preserve">ATP: ./lab.sh gpu atp</text>
 <rect x="52" y="822" width="330" height="72" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="62" y="841" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">ns ml · StatefulSet llm-train</text>
-<text x="62" y="859" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">8 pods, one per node</text>
-<text x="62" y="875" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">each requests 8 nvidia.com/gpu + 8 rdma/ib</text>
+<text x="62" y="841" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">ns ml · StatefulSet llm-train</text>
+<text x="62" y="859" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">8 pods, one per node</text>
+<text x="62" y="875" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">each requests 8 nvidia.com/gpu + 8 rdma/ib</text>
 <rect x="52" y="940" width="546" height="40" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-<text x="325" y="965" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="middle">InfiniBand NDR 400G fabric · 8 rails · GPU-to-GPU (NCCL) traffic only</text>
+<text x="325" y="965" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="middle" xml:space="preserve">InfiniBand NDR 400G fabric · 8 rails · GPU-to-GPU (NCCL) traffic only</text>
 <path d="M 217 894 L 217 938" fill="none" stroke="#7c3aed" stroke-width="3"/>
-<text x="225" y="922" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#7c3aed" text-anchor="start">all-reduce</text>
+<text x="225" y="922" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#7c3aed" text-anchor="start" xml:space="preserve">all-reduce</text>
 <rect x="650" y="685" width="570" height="320" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="662" y="707" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#d97706" text-anchor="start">Ceph Squid 19.2 · 6 nodes (simulated)</text>
-<text x="662" y="745" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start">rack-c</text>
+<text x="662" y="707" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#d97706" text-anchor="start" xml:space="preserve">Ceph Squid 19.2 · 6 nodes (simulated)</text>
+<text x="662" y="745" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">rack-c</text>
 <rect x="720" y="722" width="68" height="34" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="754" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">ceph-01</text>
+<text x="754" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">ceph-01</text>
 <rect x="796" y="722" width="68" height="34" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="830" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">ceph-02</text>
+<text x="830" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">ceph-02</text>
 <rect x="872" y="722" width="68" height="34" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="906" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">ceph-03</text>
-<text x="662" y="789" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start">rack-d</text>
+<text x="906" y="744" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">ceph-03</text>
+<text x="662" y="789" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">rack-d</text>
 <rect x="720" y="766" width="68" height="34" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="754" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">ceph-04</text>
+<text x="754" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">ceph-04</text>
 <rect x="796" y="766" width="68" height="34" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="830" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">ceph-05</text>
+<text x="830" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">ceph-05</text>
 <rect x="872" y="766" width="68" height="34" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="906" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle">ceph-06</text>
-<text x="960" y="735" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start">per node: 4x 7.68 TB NVMe OSDs</text>
-<text x="960" y="752" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">24 OSDs · ~168 TiB raw · 833 PGs</text>
-<text x="960" y="768" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">replica 3 · failure domain host</text>
-<text x="960" y="784" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">MON ceph-01/02/03 · MGR 01 (+02)</text>
-<text x="960" y="800" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">MDS ceph-04 (+ standby 05)</text>
+<text x="906" y="788" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11.5" font-weight="normal" fill="#1f2937" text-anchor="middle" xml:space="preserve">ceph-06</text>
+<text x="960" y="735" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">per node: 4x 7.68 TB NVMe OSDs</text>
+<text x="960" y="752" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">24 OSDs · ~168 TiB raw · 833 PGs</text>
+<text x="960" y="768" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">replica 3 · failure domain host</text>
+<text x="960" y="784" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">MON ceph-01/02/03 · MGR 01 (+02)</text>
+<text x="960" y="800" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">MDS ceph-04 (+ standby 05)</text>
 <rect x="780" y="822" width="425" height="72" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
-<text x="790" y="841" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start">Pools &amp; CephFS</text>
-<text x="790" y="859" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">rbd · cephfs.ckpt.data · cephfs.ckpt.meta</text>
-<text x="790" y="875" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start">CephFS "ckpt" = llm-train's checkpoint store</text>
+<text x="790" y="841" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Pools &amp; CephFS</text>
+<text x="790" y="859" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">rbd · cephfs.ckpt.data · cephfs.ckpt.meta</text>
+<text x="790" y="875" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">CephFS "ckpt" = llm-train's checkpoint store</text>
 <rect x="662" y="940" width="546" height="40" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
-<text x="935" y="958" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="middle">public net 10.10.0.0/24 · cluster (back) net 10.20.0.0/24</text>
-<text x="935" y="974" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="middle">MTU 9000 on both</text>
+<text x="935" y="958" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="middle" xml:space="preserve">public net 10.10.0.0/24 · cluster (back) net 10.20.0.0/24</text>
+<text x="935" y="974" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="middle" xml:space="preserve">MTU 9000 on both</text>
 <path d="M 382 858 L 778 858" fill="none" stroke="#ea580c" stroke-width="2.5" marker-end="url(#h-ea580c)"/>
 <text x="580" y="850" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" fill="#ea580c" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">checkpoints (CephFS over public net)</text>
-<rect x="1260" y="55" width="320" height="965" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
-<text x="1278" y="82" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start">Legend</text>
+<rect x="20" y="1040" width="1220" height="190" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+<text x="1225" y="1064" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12.5" font-weight="bold" fill="#0d9488" text-anchor="end" xml:space="preserve">./lab.sh maas fleet-plan</text>
+<rect x="40" y="1078" width="370" height="138" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="50" y="1097" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">8x Dell PowerEdge XE9680 (h100-01..08)</text>
+<text x="50" y="1115" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">8x H100 SXM5 each · pool gpu-compute</text>
+<text x="50" y="1131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">zones dc1-rack-a / dc1-rack-b</text>
+<text x="50" y="1147" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">power: Redfish via iDRAC 172.16.10.11-18</text>
+<text x="50" y="1163" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">deploy: Ubuntu noble + cloud-init → Ansible</text>
+<text x="50" y="1179" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">tags: role-gpu · gpu-h100 (iommu=pt)</text>
+<rect x="430" y="1078" width="330" height="138" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="440" y="1097" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">6x Dell PowerEdge R760xd (ceph-01..06)</text>
+<text x="440" y="1115" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">NVMe · pool ceph-storage</text>
+<text x="440" y="1131" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">2 per rack: dc1-rack-a / b / c</text>
+<text x="440" y="1147" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">power: Redfish via iDRAC .41-.46</text>
+<text x="440" y="1163" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">commissioning: update_firmware,</text>
+<text x="440" y="1179" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">  configure_hba</text>
+<rect x="780" y="1078" width="440" height="138" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="790" y="1097" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">MAAS network plan (terraform/maas/network.tf)</text>
+<text x="790" y="1115" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">oob       untagged  172.16.10.0/24  MTU 1500</text>
+<text x="790" y="1131" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">pxe       untagged  172.16.20.0/22  MTU 1500</text>
+<text x="790" y="1147" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">k8s       VLAN 30   172.16.30.0/24  MTU 1500</text>
+<text x="790" y="1163" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">ceph-pub  VLAN 40   172.16.40.0/24  MTU 9000</text>
+<text x="790" y="1179" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">ceph-clu  VLAN 41   172.16.41.0/24  MTU 9000</text>
+<text x="790" y="1195" font-family="Menlo, SF Mono, Consolas, monospace" font-size="11" font-weight="normal" fill="#4b5563" text-anchor="start" xml:space="preserve">gpu-stor  VLAN 50   172.16.50.0/24  MTU 9000</text>
+<path d="M 960 338 L 960 345 L 1249 345 L 1249 1147 L 1222 1147" fill="none" stroke="#0d9488" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-0d9488)"/>
+<rect x="1260" y="55" width="320" height="1175" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text x="1278" y="82" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Legend</text>
 <rect x="1280" y="100" width="30" height="18" rx="3" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-<text x="1322" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Real infrastructure &amp; workloads</text>
+<text x="1322" y="114" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Real infrastructure &amp; workloads</text>
 <rect x="1280" y="126" width="30" height="18" rx="3" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="1322" y="140" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Simulated GPU fleet</text>
+<text x="1322" y="140" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Simulated GPU fleet</text>
 <rect x="1280" y="152" width="30" height="18" rx="3" fill="#fffbeb" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="1322" y="166" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Simulated Ceph cluster</text>
+<text x="1322" y="166" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Simulated Ceph cluster</text>
 <rect x="1280" y="178" width="30" height="18" rx="3" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
-<text x="1322" y="192" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Stopped / alternative VM</text>
-<path d="M 1280 213 L 1310 213" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
-<text x="1322" y="218" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Fault injection path</text>
-<path d="M 1280 239 L 1310 239" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
-<text x="1322" y="244" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Telemetry &amp; control</text>
-<path d="M 1280 265 L 1310 265" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#h-ea580c)"/>
-<text x="1322" y="270" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Data (checkpoints)</text>
-<path d="M 1280 291 L 1310 291" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#h-6b7280)"/>
-<text x="1322" y="296" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start">Reads / fakes</text>
-<text x="1278" y="330" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start">Fault drills</text>
-<text x="1278" y="356" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#4b5563" text-anchor="start">GPU (15 with IB)</text>
-<text x="1278" y="373" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">Xid 79 / 94 / 95 / 64 / 31</text>
-<text x="1278" y="390" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">ECC storm · thermal · power brake</text>
-<text x="1278" y="407" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">NVLink → Xid 74 · PCIe replays</text>
-<text x="1278" y="435" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#4b5563" text-anchor="start">InfiniBand</text>
-<text x="1278" y="452" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">port down · flapping · symbol errors</text>
-<text x="1278" y="469" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">degraded width · congestion</text>
-<text x="1278" y="497" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#4b5563" text-anchor="start">Ceph (11)</text>
-<text x="1278" y="514" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">OSD crash · dead NVMe · nearfull</text>
-<text x="1278" y="531" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">full OSD · host down · slow ops</text>
-<text x="1278" y="548" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">mon disk full · clock skew</text>
-<text x="1278" y="565" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">flags left set · inconsistent PG</text>
-<text x="1278" y="582" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">MTU mismatch</text>
-<text x="1278" y="614" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start">Workflow</text>
-<rect x="1278" y="628" width="284" height="104" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
-<text x="1290" y="648" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">./lab.sh gpu drill 2</text>
-<text x="1290" y="666" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">./lab.sh ceph drill 2</text>
-<text x="1290" y="684" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">investigate: Grafana,</text>
-<text x="1290" y="702" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">  alerts, kubectl, fake shells</text>
-<text x="1290" y="720" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start">→ reveal → clear</text>
-<text x="1278" y="758" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#6b7280" text-anchor="start">github.com/cloudpilott/sre-lab</text>
-<rect x="30" y="63" width="594.6" height="20" rx="4" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
-<text x="36" y="79" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" stroke="#f8fafc" stroke-width="6" paint-order="stroke">LAYER 1 — Host: MacBook Pro M2, 16 GB RAM (~11 GB to VMs, ~5 GB for macOS)</text>
+<text x="1322" y="192" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Stopped / alternative VM</text>
+<rect x="1280" y="204" width="30" height="18" rx="3" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="1322" y="218" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Modelled in Terraform (plan only)</text>
+<path d="M 1280 239 L 1310 239" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#h-dc2626)"/>
+<text x="1322" y="244" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Fault injection path</text>
+<path d="M 1280 265 L 1310 265" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#h-2563eb)"/>
+<text x="1322" y="270" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Telemetry &amp; control</text>
+<path d="M 1280 291 L 1310 291" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#h-ea580c)"/>
+<text x="1322" y="296" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Data (checkpoints)</text>
+<path d="M 1280 317 L 1310 317" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#h-6b7280)"/>
+<text x="1322" y="322" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Reads / fakes / enrolls</text>
+<path d="M 1280 343 L 1310 343" fill="none" stroke="#0d9488" stroke-width="2" marker-end="url(#h-0d9488)"/>
+<text x="1322" y="348" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Provisioning (MAAS API)</text>
+<text x="1278" y="380" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Fault drills</text>
+<text x="1278" y="406" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">GPU (19 with IB)</text>
+<text x="1278" y="423" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">Xid 79 / 94 / 95 / 64 / 31</text>
+<text x="1278" y="440" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">ECC storm · thermal · power brake</text>
+<text x="1278" y="457" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">NVLink → Xid 74 · PCIe replays</text>
+<text x="1278" y="474" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">FW drift · FM mismatch · PCIe x8</text>
+<text x="1278" y="491" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">GDS compat mode</text>
+<text x="1278" y="519" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">InfiniBand</text>
+<text x="1278" y="536" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">port down · flapping · symbol errors</text>
+<text x="1278" y="553" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">degraded width · congestion</text>
+<text x="1278" y="581" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#4b5563" text-anchor="start" xml:space="preserve">Ceph (11)</text>
+<text x="1278" y="598" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">OSD crash · dead NVMe · nearfull</text>
+<text x="1278" y="615" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">full OSD · host down · slow ops</text>
+<text x="1278" y="632" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">mon disk full · clock skew</text>
+<text x="1278" y="649" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">flags left set · inconsistent PG</text>
+<text x="1278" y="666" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">MTU mismatch</text>
+<text x="1278" y="698" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Workflow</text>
+<rect x="1278" y="712" width="284" height="104" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="1290" y="732" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh gpu drill 2</text>
+<text x="1290" y="750" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh ceph drill 2</text>
+<text x="1290" y="768" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">investigate: Grafana,</text>
+<text x="1290" y="786" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">  alerts, kubectl, fake shells</text>
+<text x="1290" y="804" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">→ reveal → clear</text>
+<text x="1278" y="852" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Acceptance (ATP)</text>
+<rect x="1278" y="870" width="284" height="104" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="1290" y="890" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh gpu compliance</text>
+<text x="1290" y="908" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh gpu atp</text>
+<text x="1290" y="926" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">12 checks/node + NCCL 64 GPU</text>
+<text x="1290" y="944" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">root cause · timings ·</text>
+<text x="1290" y="962" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">  evidence → gpu/reports/</text>
+<text x="1278" y="1010" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" text-anchor="start" xml:space="preserve">Provisioning</text>
+<rect x="1278" y="1028" width="284" height="86" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+<text x="1290" y="1048" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh maas up</text>
+<text x="1290" y="1066" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh maas tf apply</text>
+<text x="1290" y="1084" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh maas enroll</text>
+<text x="1290" y="1102" font-family="Menlo, SF Mono, Consolas, monospace" font-size="12" font-weight="normal" fill="#1f2937" text-anchor="start" xml:space="preserve">./lab.sh maas fleet-plan</text>
+<text x="1278" y="1140" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#6b7280" text-anchor="start" xml:space="preserve">github.com/cloudpilott/sre-lab</text>
+<rect x="30" y="63" width="744.7" height="20" rx="4" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="36" y="79" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" stroke="#f8fafc" stroke-width="6" paint-order="stroke">LAYER 1 — Host: MacBook Pro M2, 16 GB RAM (k3s VMs 11 GB + maas VM 4 GB: stop maas when idle)</text>
 <rect x="30" y="258" width="555.1" height="20" rx="4" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
 <text x="36" y="274" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" stroke="#f8fafc" stroke-width="6" paint-order="stroke">LAYER 2 — Virtualization: Multipass VMs on Apple Hypervisor.framework</text>
 <rect x="30" y="383" width="428.7" height="20" rx="4" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
 <text x="36" y="399" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" stroke="#f8fafc" stroke-width="6" paint-order="stroke">LAYER 3 — Kubernetes (k3s) workloads on cp1 / w1 / w2</text>
 <rect x="30" y="658" width="673.6" height="20" rx="4" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
 <text x="36" y="674" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" stroke="#f8fafc" stroke-width="6" paint-order="stroke">LAYER 4 — Simulated fleets: 14 KWOK fake nodes (real Node objects, no real hardware)</text>
+<rect x="30" y="1048" width="736.8" height="20" rx="4" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="36" y="1064" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#1f2937" stroke="#f8fafc" stroke-width="6" paint-order="stroke">LAYER 5 — Bare-metal target, modelled in Terraform (plan-only): Dell fleet + DC network plan</text>
 </svg>
