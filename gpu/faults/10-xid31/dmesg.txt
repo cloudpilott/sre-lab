@@ -2,6 +2,13 @@
 [Sun Nov 15 21:48:43 2026] NVRM: loading NVIDIA UNIX Open Kernel Module for x86_64  580.95.05  Release Build
 [Sun Nov 15 21:48:45 2026] nvidia-nvswitch: Probing device 0000:05:00.0, Vendor Id = 0x10de, Device Id = 0x22a3
 [Sun Nov 15 21:48:48 2026] mlx5_core 0000:1a:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:3c:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:4d:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:5e:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:9c:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:bc:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:cc:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:dc:00.0: firmware version: 28.45.1020
 [Sun Nov 15 21:48:50 2026] mlx5_core 0000:1a:00.0: Port module event: module 0, Cable plugged
-[Thu Nov 26 21:43:28 2026] NVRM: Xid (PCI:0000:ab:00): 31, pid=54296, name=python3, Ch 00000018, intr 00000000. MMU Fault: ENGINE GRAPHICS GPCCLIENT_T1_3 faulted @ 0x7f3a_5c210000. Fault is of type FAULT_PDE ACCESS_TYPE_VIRT_READ
-[Thu Nov 26 21:43:28 2026] NVRM: Xid (PCI:0000:ab:00): 43, pid=54296, name=python3, Ch 00000018
+[Fri Nov 27 21:41:18 2026] NVRM: Xid (PCI:0000:ab:00): 31, pid=54296, name=python3, Ch 00000018, intr 00000000. MMU Fault: ENGINE GRAPHICS GPCCLIENT_T1_3 faulted @ 0x7f3a_5c210000. Fault is of type FAULT_PDE ACCESS_TYPE_VIRT_READ
+[Fri Nov 27 21:41:18 2026] NVRM: Xid (PCI:0000:ab:00): 43, pid=54296, name=python3, Ch 00000018

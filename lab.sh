@@ -360,6 +360,8 @@ gpu() {
     run)    [[ $# -ge 2 ]] || die "usage: ./lab.sh gpu run <node> '<command>'   e.g. ./lab.sh gpu run h100-03 'dmesg -T | grep Xid'"
             gpu_pods; gpu_sync >/dev/null; gpusim run "$@" ;;
     nccl)   gpu_pods; gpusim run h100-01 all_reduce_perf -b 1M -e 8G -f 4 -g 1 ;;
+    atp)    gpu_pods; python3 gpu/atp.py "$@" ;;                  # acceptance test: versions, topology, DCGM, HPL, NCCL, GDS
+    compliance) gpu_pods; python3 gpu/atp.py --compliance "$@" ;;   # locked-version check only
     fixtures) gpusim fixtures "${1:-gpu/faults}" ;;
     down)
       kubectl delete -f gpu/k8s/llm-train.yaml -f gpu/k8s/alerts.yaml -f gpu/k8s/dashboard.yaml --ignore-not-found
@@ -369,13 +371,17 @@ gpu() {
     *) cat <<'EOF'
 ./lab.sh gpu up                    KWOK + 8 fake H100 nodes + exporter + alerts + dashboard + llm-train
 ./lab.sh gpu status                nodes (allocatable GPUs / IB HCAs), training pods, active faults
-./lab.sh gpu faults                list fault types (GPU: Xid 79/94/95/64/31, ECC, thermal, NVLink, PCIe; IB: down/flap/errors/width/congestion)
+./lab.sh gpu faults                list fault types (GPU: Xid 79/94/95/64/31, ECC, thermal, NVLink, PCIe; IB: down/flap/errors/width/congestion;
+                                   build standard: firmware drift, Fabric Manager mismatch, PCIe x8, GDS compat mode)
 ./lab.sh gpu fault <type> <node> [n]   inject a fault (n = GPU or HCA index)
 ./lab.sh gpu drill [level 1-3]     inject a random HIDDEN fault and print the ticket
 ./lab.sh gpu reveal | show | clear answer key / active faults / heal everything (also uncordons)
 ./lab.sh gpu ssh <node>            fake root shell: nvidia-smi, dmesg, dcgmi, ibstat, perfquery, ibdiagnet, ...
 ./lab.sh gpu run <node> '<cmd>'    run one fake command, e.g. 'nvidia-smi -q -i 5 -d ECC'
 ./lab.sh gpu nccl                  nccl-tests all_reduce_perf across all 64 GPUs
+./lab.sh gpu atp [node...]         acceptance test (ATP): locked versions, topology, PCIe, ECC, IB, DCGM r3,
+                                   nvbandwidth, NCCL, HPL, GDS -> timed report in gpu/reports/ (exit 1 on defects)
+./lab.sh gpu compliance [node...]  locked-version compliance only (gpu/locked-versions.json)
 ./lab.sh gpu fixtures [dir]        write every fault's outputs as text files (default gpu/faults)
 ./lab.sh gpu down                  remove the GPU layer
 The fake shell, faults and fixtures work without the cluster (state in gpu/state.json).

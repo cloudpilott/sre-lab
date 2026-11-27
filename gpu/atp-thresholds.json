@@ -1,0 +1,18 @@
+{
+  "_comment": "ATP pass/fail thresholds per 8x H100 SXM node (and the 64-GPU cluster). Values are design targets with margin.",
+  "gpus_per_node": 8,
+  "nvlink": "NV18",
+  "gpu_nic_affinity": "PIX",
+  "pcie_gen": 5,
+  "pcie_width": 16,
+  "pcie_replays_max": 1000,
+  "h2d_gbps_min_per_gpu": 50,
+  "d2d_gbps_min_per_pair": 350,
+  "nccl_node_busbw_gbps_min": 450,
+  "nccl_cluster_busbw_gbps_min": 180,
+  "hpl_tflops_min": 390,
+  "ib_ports": 8,
+  "ib_rate_gbps": 400,
+  "ib_symbol_errors_max": 0,
+  "gds_read_gibs_min_per_gpu": 5.0
+}

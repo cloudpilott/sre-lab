@@ -81,6 +81,25 @@ Runbook: `runbooks/ceph-faults.md`. Dashboard: *Ceph Cluster - storage (sim)*. A
 37. **Combined.** Run `./lab.sh gpu drill 2` and `./lab.sh ceph drill 2` together. Two tickets arrive at once: triage which
     one blocks training, and in what order you work them.
 
+## Level 7 — Delivery: build standard and acceptance testing (`./lab.sh gpu atp`)
+Reference: `gpu/README.md` → *Acceptance testing*. Files: `gpu/locked-versions.json`, `gpu/atp-thresholds.json`, reports in `gpu/reports/`.
+38. **Golden run.** On a healthy fleet run `./lab.sh gpu atp`. Read the report: which step dominates the wall time, and what
+    would you change so the next AI Factory hands over faster?
+39. **After the RMA.** `./lab.sh gpu fault fw-drift h100-06 2`. The node works perfectly. Find the problem with
+    `./lab.sh gpu compliance`, then prove it by hand on the node (`ibstat`, `flint`, `dmesg`). Write the part-swap runbook step that prevents it.
+40. **The re-image.** `./lab.sh gpu fault fm-mismatch h100-04`. Seven ATP checks fail. Which one is the root cause, and why are the
+    others consequences? Find the exact log line that says why Fabric Manager won't start.
+41. **Silent slowness.** `./lab.sh gpu fault pcie-downtrain h100-02 3`. Nothing logs an error. Which three checks catch it, and
+    what would you ask remote hands to do?
+42. **The checkpoint that crawls.** `./lab.sh gpu fault gds-compat h100-05`. Why does GDS keep "working" at a third of the speed?
+    Which version drift caused it, and how do you stop it happening on the next image?
+43. **ATP or monitoring?** Inject `sbe-storm`, `xid31` and `ib-congestion` one at a time and run `./lab.sh gpu atp h100-03` (or the node you chose).
+    All three pass. For each, explain why that's correct, and what catches it instead.
+44. **Change the standard.** A new driver is approved. Update `gpu/locked-versions.json` in a branch, run `./lab.sh gpu compliance`, and
+    write the PR description: what changes, the rollout order (one node, then a rack, then all), and the rollback.
+45. **Handover pack.** Combine an ATP report, the `nccl` cluster result and the as-built versions into a one-page handover note for Operations,
+    with open defects, owners and the hypercare plan.
+
 ## Postmortem template
 ```
 Title / date / severity

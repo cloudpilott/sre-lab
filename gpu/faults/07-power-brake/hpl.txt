@@ -1,0 +1,35 @@
+# root@h100-03:~# hpl.sh --dat hpl-8gpu.dat   (after kubectl drain)
+================================================================================
+HPL-NVIDIA 25.09.0  -- NVIDIA accelerated HPL benchmark -- NVIDIA
+================================================================================
+
+The following parameter values will be used:
+
+N        :  376832
+NB       :    1024
+PMAP     : Column-major process mapping
+P        :       4
+Q        :       2
+PFACT    :    Left
+NBMIN    :       2
+RFACT    :    Left
+BCAST    :  2ringM
+DEPTH    :       1
+SWAP     : Spread-roll (long)
+
+--------------------------------------------------------------------------------
+T/V                N    NB     P     Q               Time                 Gflops
+--------------------------------------------------------------------------------
+WC0          376832  1024     4     2             241.60              1.4766e+05
+--------------------------------------------------------------------------------
+||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   2.0747160e-04 ...... PASSED
+================================================================================
+
+Finished      1 tests with the following results:
+              1 tests completed and passed residual checks,
+              0 tests completed and failed residual checks,
+              0 tests skipped because of illegal input values.
+--------------------------------------------------------------------------------
+
+End of Tests.
+================================================================================

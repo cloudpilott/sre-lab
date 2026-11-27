@@ -13,6 +13,9 @@ One file, standard library only (runs on macOS python3 and in python:3.12-alpine
   nodes | node-manifests | status-patch <node> | pods-json   helpers for lab.sh
   fixtures <dir>               write static outputs for every fault type (offline study)
   metrics                      print one metrics scrape to stdout
+  versions <node>              JSON of the node's installed versions (used by atp.py)
+
+Acceptance testing (ATP) on top of this simulator: gpu/atp.py (locked versions + thresholds -> timed report).
 
 Fault state lives in a JSON file: $GPUSIM_STATE (default: state.json next to this script).
 In the cluster the exporter reads the same file from a ConfigMap.
@@ -35,6 +38,13 @@ GPU_BUS = ["18", "2a", "3a", "5d", "9a", "ab", "ba", "db"]      # DGX-style SXM5
 HCA_BUS = ["1a", "3c", "4d", "5e", "9c", "bc", "cc", "dc"]      # one ConnectX-7 per GPU (rail-optimized)
 DRIVER, CUDA, DCGM = "580.95.05", "13.0", "4.4.1"
 CX7_FW = "28.45.1020"
+CX7_FW_OLD = "28.42.1000"          # what a replacement card from the RMA pool ships with
+DRIVER_NEW = "580.105.08"          # an image built without the locked version set
+KERNEL, KERNEL_NEW = "6.8.0-87-generic", "6.8.0-90-generic"
+# The build standard ("locked versions") every node must match. gpu/locked-versions.json is the copy atp.py checks.
+BASE_VERSIONS = {"kernel": KERNEL, "driver": DRIVER, "cuda": CUDA, "fabricmanager": DRIVER, "dcgm": DCGM,
+                 "vbios": "96.00.99.00.01", "doca_ofed": "OFED-internal-25.07-0.9.7", "hca_fw": CX7_FW,
+                 "nvidia_fs": "2.26.6", "gds": "1.15.1.6", "bios": "2.7.4", "idrac": "7.20.30.50"}
 FB_TOTAL = 81559
 T0 = 1793491200          # 2026-11-01 00:00 UTC: counters start here
 NVLINKS = 18
@@ -126,6 +136,36 @@ FAULTS = {
                "congestion: the port has data but no credits, often from another tenant's traffic or a hotspot on the "
                "uplinks. Action: do NOT RMA. Look at fabric-wide counters, routing (adaptive routing / SHARP), job placement and "
                "other tenants' jobs."),
+    "fw-drift": dict(kind="ib", crash=False, level=1, title="HCA firmware below the locked version (RMA replacement card)",
+        ticket="Remote hands replaced a ConnectX-7 in {node} yesterday. Before it goes back to the customer, confirm the node "
+               "meets the build standard.",
+        answer="{node} {hca} runs firmware %s, but the locked version is %s: the replacement card came from the RMA pool "
+               "with older firmware. Everything else matches. Evidence: ibstat 'Firmware version', flint -d {hca} q, the mlx5_core "
+               "firmware line in dmesg, ./lab.sh gpu compliance. Action: keep the node out of service, flash the locked firmware "
+               "(mlxfwreset / the vendor bundle), reset the card, rerun the compliance and IB checks, update the as-built record. "
+               "Add 'flash to locked FW' to the part-swap runbook." % (CX7_FW_OLD, CX7_FW)),
+    "fm-mismatch": dict(kind="node", crash=True, level=2, title="Fabric Manager / driver version mismatch",
+        ticket="{node} was re-imaged after a motherboard swap. Its pods now fail at start-up with "
+               "'CUDA error: system not yet initialized' (802).",
+        answer="{node} has driver %s from a new image, but nvidia-fabricmanager is still %s. Fabric Manager refuses to start "
+               "when the versions differ, so the NVSwitch fabric never comes up: systemctl status nvidia-fabricmanager is failed, "
+               "nvidia-smi -q shows Fabric State 'In Progress', CUDA returns error 802 and dcgmi diag can't run. "
+               "Action: put the node back on the locked set (driver %s with the matching Fabric Manager), restart "
+               "nvidia-fabricmanager, confirm Fabric State Completed / Success, run dcgmi diag -r 3 and the ATP. Then fix the image "
+               "pipeline so driver and FM are pinned together." % (DRIVER_NEW, DRIVER, DRIVER)),
+    "pcie-downtrain": dict(kind="gpu", crash=False, level=3, title="GPU PCIe link trained at x8 instead of x16",
+        ticket="On one node, host-to-device copies and checkpoint loads run at about half speed. No errors anywhere, no Xids.",
+        answer="{node} GPU {t}: the PCIe link trained at Gen5 x8 instead of x16. nvidia-smi -q -d PCI shows Link Width Current 8x, "
+               "lspci -vv shows 'Width x8 (downgraded)', and nvbandwidth host_to_device is about half on that GPU. GDS throughput "
+               "to it drops too. Nothing logs an error, which is why ATP checks link width explicitly. Action: drain, have remote "
+               "hands reseat the GPU / baseboard cable / riser, retest. If it persists, service the baseboard."),
+    "gds-compat": dict(kind="node", crash=False, level=2, title="GPUDirect Storage in compatibility mode (nvidia_fs not loaded)",
+        ticket="Checkpoint saves from {node} take about 3x longer than from the other nodes. The storage (VAST) dashboards look normal.",
+        answer="{node} booted a newer kernel (%s, locked: %s) and the nvidia_fs module wasn't rebuilt for it, so it isn't loaded. "
+               "cuFile silently falls back to compatibility mode, bouncing data through CPU memory: gdscheck -p shows nvidia_fs "
+               "N/A, lsmod has no nvidia_fs, and gdsio reads ~1/3 of normal. Action: boot the locked kernel (or install nvidia-fs "
+               "DKMS for this one), modprobe nvidia_fs, rerun gdsio. Pin the kernel in the image and add the module check to "
+               "validation." % (KERNEL_NEW, KERNEL)),
 }
 
 
@@ -229,7 +269,7 @@ def gpu_state(s, node, g, now):
     busy = crashed is None
     d = dict(present=True, busy=busy, xid=0, sbe=0, dbe=0, remap_corr=0, remap_unc=0, remap_pending=0,
              remap_fail=0, nvlink_crc=0, pcie_replay=int(h("replay", node, g) % 3), throttle=0,
-             nvlink_inactive=[], nvlink_bw_factor=1.0, events=[])
+             nvlink_inactive=[], nvlink_bw_factor=1.0, events=[], pcie_width=16)
     if busy:
         d.update(util=int(jitter(94, 100, node, g, "u")), temp=int(jitter(58, 67, node, g, "t")),
                  power=int(jitter(560, 655, node, g, "p")), sm=1980, fb=int(jitter(70800, 72400, node, g, "fb")),
@@ -278,6 +318,8 @@ def gpu_state(s, node, g, now):
         elif t == "pcie-replay":
             d["pcie_replay"] += int(200 * age / 60)
             d["events"].append((f["since"], "aer"))
+        elif t == "pcie-downtrain":
+            d["pcie_width"] = 8
         elif t == "xid31":
             d["xid"] = 31
             d["events"].append((f["since"], "xid31"))
@@ -447,6 +489,11 @@ def ts(t):
 
 
 def cmd_nvidia_smi(s, node, now, args):
+    if "topo" in args:
+        return nvsmi_topo(s, node, now)
+    if "-L" in args:
+        return "".join("GPU %d: %s (UUID: %s)\n" % (g, GPU_NAME, uuid(node, g))
+                       for g in range(NGPU) if gpu_state(s, node, g, now)["present"])
     if "-q" in args:
         return nvsmi_q(s, node, now, args)
     if "nvlink" in args:
@@ -463,7 +510,7 @@ def cmd_nvidia_smi(s, node, now, args):
     sep = "+-----------------------------------------+------------------------+----------------------+"
     lines += [ts(now) + "       ",
               "+" + "-" * 89 + "+",
-              "|" + (" NVIDIA-SMI %s" % DRIVER).ljust(35) + ("Driver Version: %s" % DRIVER).ljust(31) + ("CUDA Version: %s" % CUDA).ljust(23) + "|",
+              "|" + (" NVIDIA-SMI %s" % node_versions(s, node)["driver"]).ljust(35) + ("Driver Version: %s" % node_versions(s, node)["driver"]).ljust(31) + ("CUDA Version: %s" % CUDA).ljust(23) + "|",
               sep,
               "| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |",
               "| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |",
@@ -515,7 +562,7 @@ def nvsmi_q(s, node, now, args):
     dsel = None
     if "-d" in args and args.index("-d") + 1 < len(args):
         dsel = set(args[args.index("-d") + 1].upper().split(","))
-    out = ["", "==============NVSMI LOG==============", "", kv("Timestamp", ts(now), 0), kv("Driver Version", DRIVER, 0),
+    out = ["", "==============NVSMI LOG==============", "", kv("Timestamp", ts(now), 0), kv("Driver Version", node_versions(s, node)["driver"], 0),
            kv("CUDA Version", CUDA, 0), "", kv("Attached GPUs", sum(gpu_state(s, node, g, now)["present"] for g in range(NGPU)), 0)]
     for g in range(NGPU):
         if want is not None and g != want:
@@ -528,13 +575,18 @@ def nvsmi_q(s, node, now, args):
         if not dsel:
             sec += [kv("Product Name", GPU_NAME), kv("Product Architecture", "Hopper"), kv("Persistence Mode", "Enabled"),
                     kv("Serial Number", serial(node, g)), kv("GPU UUID", uuid(node, g)), kv("Minor Number", g),
-                    kv("VBIOS Version", "96.00.99.00.01")]
+                    kv("VBIOS Version", node_versions(s, node)["vbios"])]
         if not dsel or "PCI" in dsel or "PCIE" in dsel:
             sec += ["    PCI", kv("Bus Id", "00000000:%s:00.0" % GPU_BUS[g].upper(), 8),
                     kv("Device Id", "0x233010DE", 8),
                     "        GPU Link Info", kv("PCIe Generation", "", 12), kv("Max", 5, 16), kv("Current", 5, 16),
-                    kv("Link Width", "", 12), kv("Max", "16x", 16), kv("Current", "16x", 16),
+                    kv("Link Width", "", 12), kv("Max", "16x", 16), kv("Current", "%dx" % d["pcie_width"], 16),
                     kv("Replays Since Reset", d["pcie_replay"], 8), kv("Replay Number Rollovers", 0, 8)]
+        if not dsel or "FABRIC" in dsel:
+            fm = not has(s, node, "fm-mismatch")
+            sec += ["    Fabric", kv("State", "Completed" if fm else "In Progress", 8), kv("Status", "Success" if fm else "N/A", 8),
+                    kv("CliqueId", 32766 if fm else "N/A", 8),
+                    kv("ClusterUUID", "%08x-0000-4000-8000-%012x" % (h("cl", node) % (1 << 32), h("cl2", node) % (1 << 48)) if fm else "N/A", 8)]
         if not dsel or "PERFORMANCE" in dsel:
             sec.append("    Clocks Event Reasons")
             for bit, name in THROTTLE_NAMES:
@@ -599,13 +651,26 @@ def nvsmi_nvlink(s, node, now, args):
 
 
 def cmd_lspci(s, node, now, args):
-    out = []
+    vv = any(a.startswith("-vv") for a in args)
+    devs = []
     for g in range(NGPU):
         d = gpu_state(s, node, g, now)
-        out.append("%s:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev %s)" % (GPU_BUS[g], "a1" if d["present"] else "ff"))
+        lines = ["%s:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev %s)" % (GPU_BUS[g], "a1" if d["present"] else "ff")]
+        if vv and d["present"]:
+            w = d["pcie_width"]
+            lines += ["\t\tLnkCap:\tPort #0, Speed 32GT/s, Width x16, ASPM not supported",
+                      "\t\tLnkSta:\tSpeed 32GT/s, Width x%d%s" % (w, " (downgraded)" if w < 16 else ""),
+                      "\tKernel driver in use: nvidia", ""]
+        elif vv:
+            lines += ["\t!!! Unknown header type 7f", ""]
+        devs.append((GPU_BUS[g], lines))
     for p in range(NGPU):
-        out.append("%s:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]" % HCA_BUS[p])
-    return "\n".join(sorted(out)) + "\n"
+        lines = ["%s:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]" % HCA_BUS[p]]
+        if vv:
+            lines += ["\t\tLnkCap:\tPort #0, Speed 32GT/s, Width x16, ASPM not supported",
+                      "\t\tLnkSta:\tSpeed 32GT/s, Width x16", "\tKernel driver in use: mlx5_core", ""]
+        devs.append((HCA_BUS[p], lines))
+    return "\n".join(l for _, ls in sorted(devs) for l in ls) + "\n"
 
 
 def dmesg_lines(s, node, now):
@@ -618,10 +683,11 @@ def dmesg_lines(s, node, now):
         for t, e in port_state(s, node, p, now)["events"]:
             ev.append((t, e, p))
     pid, pname = 48000 + (h("pid", node) % 9000), "python3"
-    base = [(boot + 4.1, "NVRM: loading NVIDIA UNIX Open Kernel Module for x86_64  %s  Release Build" % DRIVER),
+    ver = node_versions(s, node)
+    base = [(boot + 4.1, "NVRM: loading NVIDIA UNIX Open Kernel Module for x86_64  %s  Release Build" % ver["driver"]),
             (boot + 6.3, "nvidia-nvswitch: Probing device 0000:05:00.0, Vendor Id = 0x10de, Device Id = 0x22a3"),
-            (boot + 9.0, "mlx5_core 0000:%s:00.0: firmware version: %s" % (HCA_BUS[0], CX7_FW)),
             (boot + 11.2, "mlx5_core 0000:%s:00.0: Port module event: module 0, Cable plugged" % HCA_BUS[0])]
+    base += [(boot + 9.0 + p * 0.05, "mlx5_core 0000:%s:00.0: firmware version: %s" % (HCA_BUS[p], ver["hca_fw"][p])) for p in range(NGPU)]
     out = list(base)
     for t, e, i in sorted(ev):
         if t > now:
@@ -702,6 +768,9 @@ def cmd_dcgmi(s, node, now, args):
         return ("Error: Unable to complete diagnostic for group 0. Return: The GPU is busy with other processes (-31).\n"
                 "Hint: drain the node first (kubectl drain), then rerun.\n")
     present = [g for g in range(NGPU) if gs[g]["present"]]
+    if has(s, node, "fm-mismatch"):
+        return ("Error: Unable to complete diagnostic for group 0. Return: The GPU fabric is not initialized: "
+                "NVSwitch Fabric Manager is not running (check 'systemctl status nvidia-fabricmanager').\n")
 
     def row(k, v):
         return "| %-26s| %-47s|" % (k, v)
@@ -721,7 +790,7 @@ def cmd_dcgmi(s, node, now, args):
              "| Diagnostic                | Result                                         |",
              "+===========================+================================================+",
              "|-----  Metadata  ----------+------------------------------------------------|",
-             row("DCGM Version", DCGM), row("Driver Version Detected", DRIVER),
+             row("DCGM Version", DCGM), row("Driver Version Detected", node_versions(s, node)["driver"]),
              row("GPU Device IDs Detected", ",".join("2330" for _ in present)),
              "|-----  Deployment  --------+------------------------------------------------|"]
     rr = fails(lambda d: d["remap_pending"] or d["remap_fail"], "row remap pending or failed; reset or RMA")
@@ -765,7 +834,7 @@ def cmd_ibstat(s, node, now, args):
         if devs and "mlx5_%d" % p not in devs:
             continue
         d = port_state(s, node, p, now)
-        out += ["CA 'mlx5_%d'" % p, "\tCA type: MT4129", "\tNumber of ports: 1", "\tFirmware version: %s" % CX7_FW,
+        out += ["CA 'mlx5_%d'" % p, "\tCA type: MT4129", "\tNumber of ports: 1", "\tFirmware version: %s" % node_versions(s, node)["hca_fw"][p],
                 "\tHardware version: 0", "\tNode GUID: %s" % guid(node, p), "\tSystem image GUID: %s" % guid(node, p),
                 "\tPort 1:", "\t\tState: %s" % IB_STATE[d["state"]], "\t\tPhysical state: %s" % IB_PHYS[d["phys"]],
                 "\t\tRate: %d" % d["rate"], "\t\tBase lid: %d" % (lid(node, p) if d["state"] == 4 else 65535),
@@ -884,6 +953,8 @@ def busbw(s, now):
 
 
 def cmd_nccl(s, node, now, args):
+    if "-g" in args and args[args.index("-g") + 1:args.index("-g") + 2] == ["8"]:
+        return cmd_nccl_node(s, node, now, args)
     bw, bad = busbw(s, now)
     head = ["# nThread 1 nGpus 1 minBytes 8 maxBytes 8589934592 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0",
             "#", "# Using devices"]
@@ -911,7 +982,8 @@ def cmd_nccl(s, node, now, args):
         else:
             msg = ["%s: Test CUDA failure common.cu:1041 '%s'" % (bad, {"xid94": "uncorrectable ECC error encountered",
                    "xid95": "uncorrectable ECC error encountered", "row-remap-fail": "uncorrectable ECC error encountered",
-                   "xid31": "an illegal memory access was encountered", "nvlink": "unspecified launch failure"}.get(t, "unknown error")),
+                   "xid31": "an illegal memory access was encountered", "nvlink": "unspecified launch failure",
+                   "fm-mismatch": "system not yet initialized (CUDA error 802)"}.get(t, "unknown error")),
                    " .. %s pid %d: Test failure common.cu:891" % (bad, 48000)]
         return "\n".join(head + ["#"] + msg + ["-------------------------------------------------------",
                                               "Primary job terminated normally, but 1 process returned a non-zero exit code."]) + "\n"
@@ -933,6 +1005,364 @@ def cmd_nccl(s, node, now, args):
     return "\n".join(head + rows) + "\n"
 
 
+# ---------------------------------------------------------------------------------------------
+# Build standard + acceptance tools: versions, topology, Fabric Manager, nvbandwidth, NCCL (1 node), HPL, GDS
+# ---------------------------------------------------------------------------------------------
+def node_versions(s, node):
+    v = dict(BASE_VERSIONS)
+    v["hca_fw"] = [CX7_FW] * NGPU
+    for f in faults_on(s, node):
+        t = f["type"]
+        if t == "fw-drift":
+            v["hca_fw"][f["target"]] = CX7_FW_OLD
+        elif t == "fm-mismatch":
+            v["driver"] = DRIVER_NEW                   # Fabric Manager stays on the locked version
+        elif t == "gds-compat":
+            v["kernel"], v["nvidia_fs"] = KERNEL_NEW, None
+    return v
+
+
+def busy_error(s, node, now, tool):
+    if any(gpu_state(s, node, g, now)["busy"] for g in range(NGPU)):
+        return ("%s: the GPUs on %s are running llm-train. Burn-in and acceptance tests need an idle node:\n"
+                "drain it first (kubectl drain %s --ignore-daemonsets --delete-emptydir-data).\n" % (tool, node, node))
+    return None
+
+
+CUDA_802 = "CUDA error 802: system not yet initialized (NVSwitch fabric not ready: is nvidia-fabricmanager running?)"
+
+
+def nvsmi_topo(s, node, now):
+    gs = [gpu_state(s, node, g, now) for g in range(NGPU)]
+    gpus = [g for g in range(NGPU) if gs[g]["present"]]
+
+    def numa(i):
+        return 0 if i < NGPU // 2 else 1
+
+    def gg(a, b):
+        if a == b:
+            return "X"
+        return "NV17" if (gs[a]["nvlink_inactive"] or gs[b]["nvlink_inactive"]) else "NV18"
+
+    cols = ["GPU%d" % g for g in gpus] + ["NIC%d" % n for n in range(NGPU)]
+    out = ["\t" + "\t".join(cols) + "\tCPU Affinity\tNUMA Affinity\tGPU NUMA ID"]
+    for a in gpus:
+        cells = [gg(a, b) for b in gpus] + ["PIX" if a == n else ("NODE" if numa(a) == numa(n) else "SYS") for n in range(NGPU)]
+        out.append("GPU%d\t" % a + "\t".join(cells) + "\t%s\t%d\t\tN/A" % ("0-55,112-167" if numa(a) == 0 else "56-111,168-223", numa(a)))
+    for n in range(NGPU):
+        cells = ["PIX" if g == n else ("NODE" if numa(g) == numa(n) else "SYS") for g in gpus]
+        cells += ["X" if n == m else ("NODE" if numa(n) == numa(m) else "SYS") for m in range(NGPU)]
+        out.append("NIC%d\t" % n + "\t".join(cells))
+    out += ["", "Legend:", "", "  X    = Self",
+            "  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)",
+            "  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node",
+            "  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)",
+            "  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)",
+            "  PIX  = Connection traversing at most a single PCIe bridge",
+            "  NV#  = Connection traversing a bonded set of # NVLinks", "", "NIC Legend:", ""]
+    out += ["  NIC%d: mlx5_%d" % (n, n) for n in range(NGPU)]
+    return "\n".join(out) + "\n"
+
+
+def cmd_versions_tools(s, node, now, cmd, args):
+    """uname, cat, ofed_info, flint, dmidecode, racadm, nv-fabricmanager, systemctl, lsmod, gdscheck."""
+    v = node_versions(s, node)
+    boot = boot_time(node)
+    fm_ok = not has(s, node, "fm-mismatch")
+    if cmd == "uname":
+        return (v["kernel"] + "\n") if "-r" in args else \
+            "Linux %s %s #88-Ubuntu SMP PREEMPT_DYNAMIC x86_64 x86_64 x86_64 GNU/Linux\n" % (node, v["kernel"])
+    if cmd == "cat":
+        path = args[0] if args else ""
+        if path == "/proc/driver/nvidia/version":
+            return ("NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  %s  Release Build  (dvs-builder@U22-I3-AF03-09-1)\n"
+                    "GCC version:  gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04)\n" % v["driver"])
+        if path == "/var/log/fabricmanager.log":
+            t = time.strftime("[%b %d %Y %H:%M:%S]", time.localtime(boot + 21))
+            if fm_ok:
+                return ("%s [INFO] [tid 2871] Fabric Manager version %s is running with the following configuration options\n"
+                        "%s [INFO] [tid 2871] Successfully configured all the available NVSwitches to route GPU NVLink traffic. "
+                        "NVLink Peer-to-Peer support will be enabled once the GPUs are successfully registered with the NVLink fabric.\n"
+                        % (t, v["fabricmanager"], t))
+            return ("%s [INFO] [tid 2871] Fabric Manager version %s is running with the following configuration options\n"
+                    "%s [ERROR] [tid 2871] fabric manager NVIDIA GPU driver interface version %s don't match with Fabric Manager "
+                    "version %s. Please update with matching NVIDIA driver package.\n" % (t, v["fabricmanager"], t, v["driver"], v["fabricmanager"]))
+        return "cat: %s: No such file or directory (simulated paths: /proc/driver/nvidia/version, /var/log/fabricmanager.log)\n" % path
+    if cmd == "ofed_info":
+        return v["doca_ofed"] + ":\n"
+    if cmd == "flint":
+        dev = args[args.index("-d") + 1] if "-d" in args and args.index("-d") + 1 < len(args) else ""
+        try:
+            p = int(dev.split("_")[1])
+            assert 0 <= p < NGPU
+        except (IndexError, ValueError, AssertionError):
+            return "-E- Failed to open device: %s. usage: flint -d mlx5_N q\n" % (dev or "<none>")
+        return "\n".join(["Image type:            FS4", "FW Version:            %s" % v["hca_fw"][p],
+                          "FW Release Date:       %s" % ("3.7.2025" if v["hca_fw"][p] == CX7_FW else "18.11.2024"),
+                          "Product Version:       %s" % v["hca_fw"][p],
+                          "Description:           NVIDIA ConnectX-7 HHHL Adapter Card; 400Gb/s NDR IB; single-port OSFP",
+                          "Base GUID:             %s" % guid(node, p), "Security Attributes:   secure-fw"]) + "\n"
+    if cmd == "dmidecode":
+        key = args[args.index("-s") + 1] if "-s" in args and args.index("-s") + 1 < len(args) else ""
+        vals = {"bios-version": v["bios"], "system-product-name": "PowerEdge XE9680", "system-manufacturer": "Dell Inc.",
+                "system-serial-number": "%07X" % (h("svctag", node) % (1 << 28))}
+        return (vals[key] + "\n") if key in vals else "usage: dmidecode -s bios-version|system-product-name|system-manufacturer|system-serial-number\n"
+    if cmd == "racadm":
+        if "getversion" not in args:
+            return "usage: racadm getversion   (other racadm commands are not simulated)\n"
+        return (" Bios Version                     = %s\n iDRAC Version                    = %s\n"
+                " Lifecycle Controller Version     = %s\n" % (v["bios"], v["idrac"], v["idrac"]))
+    if cmd == "nv-fabricmanager":
+        return "Fabric Manager version is : %s\n" % v["fabricmanager"]
+    if cmd == "systemctl":
+        unit = [a for a in args if not a.startswith("-") and a not in ("status", "is-active")]
+        unit = (unit[0] if unit else "").replace(".service", "")
+        known = {"nvidia-fabricmanager": "NVIDIA fabric manager service", "nvidia-persistenced": "NVIDIA Persistence Daemon",
+                 "nvidia-dcgm": "NVIDIA DCGM service", "openibd": "openibd - configure Mellanox devices"}
+        if unit not in known:
+            return "Unit %s.service could not be found.\n" % unit
+        ok = fm_ok or unit != "nvidia-fabricmanager"
+        if "is-active" in args:
+            return "active\n" if ok else "failed\n"
+        since = time.strftime("%a %Y-%m-%d %H:%M:%S %Z", time.localtime(boot + 21))
+        out = ["%s %s.service - %s" % ("●" if ok else "×", unit, known[unit]),
+               "     Loaded: loaded (/usr/lib/systemd/system/%s.service; enabled; preset: enabled)" % unit,
+               ("     Active: active (running) since %s" % since) if ok else
+               ("     Active: failed (Result: exit-code) since %s" % since)]
+        if not ok:
+            out += ["    Process: 2871 ExecStart=/usr/bin/nv-fabricmanager -c /usr/share/nvidia/nvswitch/fabricmanager.cfg (code=exited, status=1/FAILURE)",
+                    "", "%s %s nv-fabricmanager[2871]: fabric manager NVIDIA GPU driver interface version %s don't match with "
+                    "Fabric Manager version %s. Please update with matching NVIDIA driver package."
+                    % (time.strftime("%b %d %H:%M:%S", time.localtime(boot + 21)), node, v["driver"], v["fabricmanager"]),
+                    "%s %s systemd[1]: %s.service: Failed with result 'exit-code'." % (time.strftime("%b %d %H:%M:%S", time.localtime(boot + 21)), node, unit)]
+        return "\n".join(out) + "\n"
+    if cmd == "lsmod":
+        mods = [("nvidia_fs", 262144, 0, ""), ("nvidia_peermem", 16384, 0, ""), ("nvidia_uvm", 2134016, 8, ""),
+                ("nvidia_drm", 135168, 0, ""), ("nvidia_modeset", 1638400, 1, "nvidia_drm"),
+                ("nvidia", 108646400, 186, "nvidia_uvm,nvidia_peermem,nvidia_fs,nvidia_modeset"),
+                ("mlx5_ib", 495616, 0, ""), ("ib_uverbs", 200704, 18, "nvidia_peermem,rdma_ucm,mlx5_ib"),
+                ("mlx5_core", 2502656, 1, "mlx5_ib"), ("rdma_ucm", 32768, 0, "")]
+        if v["nvidia_fs"] is None:
+            mods = [(m, sz, n, u.replace("nvidia_fs,", "")) for m, sz, n, u in mods if m != "nvidia_fs"]
+        return "Module                  Size  Used by\n" + "".join("%-22s %8d  %d %s\n" % m for m in mods)
+    if cmd == "gdscheck":
+        compat = v["nvidia_fs"] is None
+        out = [" GDS release version: %s" % v["gds"],
+               " nvidia_fs version:  %s libcufile version: 2.12" % ("N/A" if compat else v["nvidia_fs"]), " Platform: x86_64",
+               " ============", " ENVIRONMENT:", " ============", " =====================", " DRIVER CONFIGURATION:",
+               " =====================", " NVMe               : Unsupported", " NVMeOF             : Unsupported",
+               " NFS                : %s" % ("Unsupported" if compat else "Supported"), " WekaFS             : Unsupported",
+               " Userspace RDMA     : %s" % ("Unsupported" if compat else "Supported"),
+               " --Mellanox PeerDirect : Enabled", " --rdma devices        : Configured",
+               " --rdma_device_status  : Up: %d Down: %d" % (NGPU, 0),
+               " =====================", " CUFILE CONFIGURATION:", " =====================",
+               " properties.use_compat_mode : true", " properties.allow_compat_mode : true",
+               " fs.generic.posix_unaligned_writes : false", " =========", " GPU INFO:", " ========="]
+        for g in range(NGPU):
+            if gpu_state(s, node, g, now)["present"]:
+                out.append(" GPU index %d %s bar:1 bar size (MiB):131072 %s, IOMMU State: Disabled"
+                           % (g, GPU_NAME, "supports GDS" if not compat else "GDS not available (nvidia_fs not loaded)"))
+        if compat:
+            out += [" ==============", " PLATFORM INFO:", " ==============",
+                    " WARN: nvidia_fs driver is not loaded: cuFile I/O will run in compatibility mode (POSIX, through host memory)"]
+        out.append(" Platform verification %s" % ("succeeded" if not compat else "failed"))
+        return "\n".join(out) + "\n"
+    return None
+
+
+def nv_header(s, node, now, tool):
+    v = node_versions(s, node)
+    out = ["%s Version: v0.8" % tool, "Built from Git version: v0.8", "", "CUDA Runtime Version: 13000",
+           "CUDA Driver Version: 13000", "Driver Version: %s" % v["driver"], ""]
+    for g in range(NGPU):
+        if gpu_state(s, node, g, now)["present"]:
+            out.append("Device %d: %s (00000000:%s:00)" % (g, GPU_NAME, GPU_BUS[g].upper()))
+    return out + [""]
+
+
+def h2d_gbps(d, node, g):
+    return 55.4 * (0.5 if d["pcie_width"] < 16 else 1.0) * jitter(0.985, 1.0, "h2d", node, g)
+
+
+def d2d_gbps(da, db, node, a, b):
+    return 389.0 * min(da["nvlink_bw_factor"], db["nvlink_bw_factor"]) * jitter(0.985, 1.0, "d2d", node, a, b)
+
+
+def cmd_nvbandwidth(s, node, now, args):
+    err = busy_error(s, node, now, "nvbandwidth")
+    if err:
+        return err
+    out = nv_header(s, node, now, "nvbandwidth")
+    if has(s, node, "fm-mismatch"):
+        return "\n".join(out + [CUDA_802]) + "\n"
+    test = args[args.index("-t") + 1] if "-t" in args and args.index("-t") + 1 < len(args) else None
+    tests = [test] if test else ["host_to_device_memcpy_ce", "device_to_device_memcpy_read_ce"]
+    gs = [gpu_state(s, node, g, now) for g in range(NGPU)]
+    gpus = [g for g in range(NGPU) if gs[g]["present"]]
+    for t in tests:
+        if t == "host_to_device_memcpy_ce":
+            vals = [h2d_gbps(gs[g], node, g) for g in gpus]
+            out += ["Running host_to_device_memcpy_ce.", "memcpy CE CPU(row) -> GPU(column) bandwidth (GB/s)",
+                    "          " + "".join("%10d" % g for g in gpus), "         0" + "".join("%10.2f" % x for x in vals), "",
+                    "SUM host_to_device_memcpy_ce %.2f" % sum(vals), ""]
+        elif t == "device_to_device_memcpy_read_ce":
+            out += ["Running device_to_device_memcpy_read_ce.", "memcpy CE GPU(row) <- GPU(column) bandwidth (GB/s)",
+                    "          " + "".join("%10d" % g for g in gpus)]
+            tot = 0.0
+            for a in gpus:
+                row = []
+                for b in gpus:
+                    if a == b:
+                        row.append("%10s" % "N/A")
+                    else:
+                        x = d2d_gbps(gs[a], gs[b], node, a, b)
+                        tot += x
+                        row.append("%10.2f" % x)
+                out.append("%10d" % a + "".join(row))
+            out += ["", "SUM device_to_device_memcpy_read_ce %.2f" % tot, ""]
+        else:
+            out.append("ERROR: Testcase %s not found! (simulated: host_to_device_memcpy_ce, device_to_device_memcpy_read_ce)" % t)
+    return "\n".join(out) + "\n"
+
+
+def nccl_node_busbw(s, node, now):
+    """(busbw GB/s or None, error) for all_reduce over the 8 GPUs of one node (NVLink / NVSwitch only)."""
+    gs = [gpu_state(s, node, g, now) for g in range(NGPU)]
+    if has(s, node, "fm-mismatch"):
+        return None, CUDA_802
+    missing = [g for g in range(NGPU) if not gs[g]["present"]]
+    if missing:
+        return None, "CUDA driver error: device %d not found (only %d visible devices)" % (missing[0], NGPU - len(missing))
+    for g, d in enumerate(gs):
+        if d["nvlink_inactive"]:
+            return None, "Test CUDA failure common.cu:1041 'unspecified launch failure' (Xid 74, NVLink fatal error on GPU %d)" % g
+    bw = 480.0
+    for d in gs:
+        if d["throttle"] & HW_POWER_BRAKE:
+            bw = min(bw, 215.0)
+        elif d["throttle"] & HW_THERMAL:
+            bw = min(bw, 330.0)
+        if d["nvlink_crc"]:
+            bw = min(bw, 268.0)
+    return bw * jitter(0.985, 1.0, "ncclnode", node), None
+
+
+def cmd_nccl_node(s, node, now, args):
+    err = busy_error(s, node, now, "all_reduce_perf")
+    if err:
+        return err
+    head = ["# nThread 1 nGpus 8 minBytes 1048576 maxBytes 8589934592 step: 4(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0",
+            "#", "# Using devices"]
+    head += ["#  Rank %2d Group  0 Pid %6d on %8s device  %d [0x%s] %s" % (g, 48000, node, g, GPU_BUS[g], GPU_NAME)
+             for g in range(NGPU) if gpu_state(s, node, g, now)["present"]]
+    bw, e = nccl_node_busbw(s, node, now)
+    if e:
+        return "\n".join(head + ["#", "%s: %s" % (node, e)]) + "\n"
+    rows = ["#", "#       size         count      type   redop    root     time   algbw   busbw #wrong",
+            "#        (B)    (elements)                               (us)  (GB/s)  (GB/s)"]
+    size = 1 << 20
+    while size <= 8 << 30:
+        frac = min(1.0, (size / float(256 << 20)) ** 0.5)
+        b = max(0.5, bw * frac * jitter(0.98, 1.0, "nccln", node, size))
+        alg = b / (2 * 7 / 8.0)
+        rows.append("%12d  %12d     float     sum      -1  %7.1f  %6.2f  %6.2f      0" % (size, size // 4, size / (alg * 1e3), alg, b))
+        size *= 4
+    rows += ["# Out of bounds values : 0 OK", "# Avg bus bandwidth    : %.3f " % (bw * 0.69), "#",
+             "# (acceptance baseline for one 8x H100 SXM node at 8 GB: ~480 GB/s busbw over NVLink/NVSwitch)"]
+    return "\n".join(head + rows) + "\n"
+
+
+HPL_PER_GPU = 51.6e3          # GFLOPS sustained per H100 SXM (FP64 Tensor Core, ~77% of the 67 TFLOPS peak)
+HPL_N, HPL_NB = 376832, 1024
+
+
+def hpl_result(s, node, now):
+    """(gflops or None, error, residual_ok)"""
+    gs = [gpu_state(s, node, g, now) for g in range(NGPU)]
+    if has(s, node, "fm-mismatch"):
+        return None, CUDA_802, False
+    if not all(d["present"] for d in gs):
+        return None, "HPL ERROR: P x Q = 4 x 2 needs 8 GPUs, CUDA reports %d. Check nvidia-smi / dmesg." % sum(d["present"] for d in gs), False
+    for g, d in enumerate(gs):
+        if d["nvlink_inactive"]:
+            return None, "CUDA error at GPU %d: unspecified launch failure (Xid 74 NVLink fatal error during panel broadcast)" % g, False
+    f = 1.0
+    for d in gs:
+        if d["throttle"] & HW_POWER_BRAKE:
+            f = min(f, 0.36)
+        elif d["throttle"] & HW_THERMAL:
+            f = min(f, 0.61)            # the slowest GPU sets the pace of the whole run
+        if d["nvlink_crc"]:
+            f = min(f, 0.84)
+        if d["pcie_width"] < 16:
+            f = min(f, 0.97)
+    resid_ok = not any(d["remap_pending"] or d["remap_fail"] or d["dbe"] for d in gs)
+    return NGPU * HPL_PER_GPU * f * jitter(0.985, 1.0, "hpl", node), None, resid_ok
+
+
+def cmd_hpl(s, node, now, args):
+    err = busy_error(s, node, now, "hpl.sh")
+    if err:
+        return err
+    gf, e, ok = hpl_result(s, node, now)
+    out = ["=" * 80, "HPL-NVIDIA 25.09.0  -- NVIDIA accelerated HPL benchmark -- NVIDIA", "=" * 80, "",
+           "The following parameter values will be used:", "",
+           "N        :  %d" % HPL_N, "NB       :    %d" % HPL_NB, "PMAP     : Column-major process mapping",
+           "P        :       4", "Q        :       2", "PFACT    :    Left", "NBMIN    :       2", "RFACT    :    Left",
+           "BCAST    :  2ringM", "DEPTH    :       1", "SWAP     : Spread-roll (long)", "", "-" * 80]
+    if e:
+        return "\n".join(out + [e, "HPL run aborted on %s." % node]) + "\n"
+    t = (2.0 / 3.0) * HPL_N ** 3 / (gf * 1e9)
+    resid = (2.1e-4 if ok else 3.7e+2) * jitter(0.8, 1.2, "res", node)
+    out += ["T/V                N    NB     P     Q               Time                 Gflops", "-" * 80,
+            "WC0          %6d  %4d     4     2           %8.2f              %.4e" % (HPL_N, HPL_NB, t, gf), "-" * 80,
+            "||Ax-b||_oo/(eps*(||A||_oo*||x||_oo+||b||_oo)*N)=   %.7e ...... %s" % (resid, "PASSED" if ok else "FAILED"),
+            "=" * 80, "", "Finished      1 tests with the following results:",
+            "              %d tests completed and passed residual checks," % (1 if ok else 0),
+            "              %d tests completed and failed residual checks," % (0 if ok else 1),
+            "              0 tests skipped because of illegal input values.", "-" * 80, "", "End of Tests.", "=" * 80]
+    return "\n".join(out) + "\n"
+
+
+def gds_gibs(s, node, now, g, write=False, xfer=0):
+    d = gpu_state(s, node, g, now)
+    if not d["present"]:
+        return None
+    base = 4.9 if write else 5.6
+    if xfer != 0 or node_versions(s, node)["nvidia_fs"] is None:
+        base *= 0.34                        # CPU bounce buffer path (compat mode or explicit CPU transfer)
+    if d["pcie_width"] < 16:
+        base = min(base, 2.9)
+    return base * jitter(0.97, 1.0, "gds", node, g, write, xfer)
+
+
+def cmd_gdsio(s, node, now, args):
+    err = busy_error(s, node, now, "gdsio")
+    if err:
+        return err
+    if has(s, node, "fm-mismatch"):
+        return "cuFile driver initialization failed: %s\n" % CUDA_802
+
+    def opt(k, default):
+        return args[args.index(k) + 1] if k in args and args.index(k) + 1 < len(args) else default
+    try:
+        g, threads, xfer, write = int(opt("-d", "0")), int(opt("-w", "8")), int(opt("-x", "0")), opt("-I", "0") == "1"
+    except ValueError:
+        return "usage: gdsio -D /mnt/vast/gds -d <gpu> -w <threads> -s 8G -i 1M -x <0 GPUD|1 CPUONLY|2 CPU_GPU> -I <0 read|1 write>\n"
+    if not 0 <= g < NGPU:
+        return "gdsio: invalid GPU index %d\n" % g
+    gib = gds_gibs(s, node, now, g, write, xfer)
+    if gib is None:
+        return "cuFile error: cudaSetDevice(%d) failed: no CUDA-capable device is detected\n" % g
+    size_kib = 8 * 1024 * 1024 * threads // 8
+    secs = size_kib / 1024.0 / 1024.0 / gib
+    lat = threads * 1024.0 / (gib * 1024 * 1024) * 1e6
+    return ("IoType: %s XferType: %s Threads: %d DataSetSize: %d/%d(KiB) IOSize: 1024(KiB) Throughput: %.6f GiB/sec, "
+            "Avg_Latency: %.6f usecs ops: %d total_time %.6f secs\n"
+            % ("WRITE" if write else "READ", {0: "GPUD", 1: "CPUONLY", 2: "CPU_GPU"}.get(xfer, "GPUD"), threads,
+               size_kib, size_kib, gib, lat, size_kib // 1024, secs))
+
+
 HELP = """Simulated commands on {node}:
   nvidia-smi [-q [-i N] [-d ECC|ROW_REMAPPER|TEMPERATURE|PERFORMANCE|POWER|CLOCK|PCI|MEMORY]]
   nvidia-smi nvlink -s | -e
@@ -942,7 +1372,15 @@ HELP = """Simulated commands on {node}:
   perfquery [-x] -C mlx5_N -P 1
   ibdiagnet                    (fabric-wide)
   all_reduce_perf              (nccl-tests across all 64 GPUs)
-  hostname | uptime | help | exit       pipes: | grep [-i] [-v] [-E] PAT | head [-n N] | tail [-n N] | wc -l
+Build standard / acceptance (burn-in tools need a drained node):
+  nvidia-smi -L | topo -m      nvidia-smi -q -d PCI|FABRIC      lspci -vv
+  uname -r | ofed_info -s | flint -d mlx5_N q | dmidecode -s bios-version | racadm getversion
+  cat /proc/driver/nvidia/version | /var/log/fabricmanager.log   nv-fabricmanager --version
+  systemctl status nvidia-fabricmanager    lsmod    gdscheck -p
+  nvbandwidth [-t host_to_device_memcpy_ce|device_to_device_memcpy_read_ce]
+  all_reduce_perf -b 1M -e 8G -f 4 -g 8   (this node only, NVLink)
+  hpl.sh --dat hpl-8gpu.dat               gdsio -D /mnt/vast/gds -d <gpu> -w 8 -s 8G -i 1M -x 0 -I 0
+  hostname | uptime | help | exit       pipes: | grep [-i] [-v] [-c] [-A/-B/-C N] [-e PAT] PAT | head [-n N] | tail [-n N] | wc -l
 """
 
 
@@ -965,6 +1403,14 @@ def run_one(s, node, line, now=None):
         cmd, args = args[0], args[1:]
     if "all_reduce_perf" in line:
         out = cmd_nccl(s, node, now, args)
+    elif cmd in ("uname", "cat", "ofed_info", "flint", "dmidecode", "racadm", "nv-fabricmanager", "systemctl", "lsmod", "gdscheck"):
+        out = cmd_versions_tools(s, node, now, cmd, args)
+    elif cmd == "nvbandwidth":
+        out = cmd_nvbandwidth(s, node, now, args)
+    elif cmd in ("hpl.sh", "hpl", "xhpl"):
+        out = cmd_hpl(s, node, now, args)
+    elif cmd == "gdsio":
+        out = cmd_gdsio(s, node, now, args)
     elif cmd == "nvidia-smi":
         out = cmd_nvidia_smi(s, node, now, args)
     elif cmd == "dmesg":
@@ -1003,15 +1449,36 @@ def pipe(text, st):
     lines = text.rstrip("\n").split("\n")
     c, a = st[0], st[1:]
     if c == "grep":
-        flags = [x for x in a if x.startswith("-")]
-        pats = [x for x in a if not x.startswith("-")]
+        flags, pats, after, before, i = set(), [], 0, 0, 0
+        while i < len(a):
+            x = a[i]
+            if x in ("-A", "-B", "-C") and i + 1 < len(a):
+                n = int(a[i + 1])
+                after, before = (n if x != "-B" else after), (n if x != "-A" else before)
+                i += 2
+                continue
+            if x[:2] in ("-A", "-B", "-C") and x[2:].isdigit():
+                n = int(x[2:])
+                after, before = (n if x[1] != "B" else after), (n if x[1] != "A" else before)
+            elif x == "-e" and i + 1 < len(a):
+                pats.append(a[i + 1])
+                i += 1
+            elif x.startswith("-") and len(x) > 1:
+                flags.update(x[1:])
+            else:
+                pats.append(x)
+            i += 1
         if not pats:
             return text
-        rx = re.compile(pats[0].replace("\\|", "|"), re.I if "-i" in flags else 0)
-        keep = [l for l in lines if bool(rx.search(l)) != ("-v" in flags)]
-        if "-c" in flags:
-            return "%d\n" % len(keep)
-        lines = keep
+        rx = re.compile("|".join("(?:%s)" % p.replace("\\|", "|") for p in pats), re.I if "i" in flags else 0)
+        hits = [bool(rx.search(l)) != ("v" in flags) for l in lines]
+        if "c" in flags:
+            return "%d\n" % sum(hits)
+        keep = set()
+        for k, hit in enumerate(hits):
+            if hit:
+                keep.update(range(max(0, k - before), min(len(lines), k + after + 1)))
+        lines = [lines[k] for k in sorted(keep)]
     elif c in ("head", "tail"):
         n = 10
         for i, x in enumerate(a):
@@ -1118,14 +1585,20 @@ def fixtures(outdir):
         cmds = [("nvidia-smi.txt", "nvidia-smi"), ("nvidia-smi-q-gpu%d.txt" % target, "nvidia-smi -q -i %d" % target),
                 ("nvidia-smi-nvlink-e.txt", "nvidia-smi nvlink -e -i %d" % target), ("dmesg.txt", "dmesg -T"), ("lspci.txt", "lspci"),
                 ("ibstat.txt", "ibstat"), ("perfquery-mlx5_%d.txt" % target, "perfquery -C mlx5_%d -P 1" % target),
-                ("ibdiagnet.txt", "ibdiagnet"), ("nccl-all_reduce_perf.txt", "all_reduce_perf -b 1M -e 8G -f 4 -g 1")]
+                ("ibdiagnet.txt", "ibdiagnet"), ("nccl-all_reduce_perf.txt", "all_reduce_perf -b 1M -e 8G -f 4 -g 1"),
+                ("nvidia-smi-topo-m.txt", "nvidia-smi topo -m"), ("lspci-vv.txt", "lspci -vv"),
+                ("versions.txt", "racadm getversion"), ("fabricmanager.txt", "systemctl status nvidia-fabricmanager"),
+                ("gdscheck.txt", "gdscheck -p")]
         for fn, c in cmds:
             with open(os.path.join(d, fn), "w") as fh:
                 fh.write("# root@%s:~# %s\n" % (node, c) + run_one(s, node, c, now))
         drained = dict(s, pods={n: pod_of(s, n) for n in NODES if n != node})   # dcgmi needs a drained node
-        with open(os.path.join(d, "dcgmi-diag-r3.txt"), "w") as fh:
-            fh.write("# root@%s:~# dcgmi diag -r 3   (after kubectl drain)\n" % node)
-            fh.write(run_one(drained, node, "dcgmi diag -r 3", now))
+        for fn, c in [("dcgmi-diag-r3.txt", "dcgmi diag -r 3"), ("hpl.txt", "hpl.sh --dat hpl-8gpu.dat"),
+                      ("nvbandwidth.txt", "nvbandwidth"), ("nccl-node-g8.txt", "all_reduce_perf -b 1M -e 8G -f 4 -g 8"),
+                      ("gdsio-gpu%d.txt" % target, "gdsio -D /mnt/vast/gds -d %d -w 8 -s 8G -i 1M -x 0 -I 0" % target)]:
+            with open(os.path.join(d, fn), "w") as fh:
+                fh.write("# root@%s:~# %s   (after kubectl drain)\n" % (node, c))
+                fh.write(run_one(drained, node, c, now))
         with open(os.path.join(d, "README.md"), "w") as fh:
             if ftype:
                 f = s["faults"][0]
@@ -1192,6 +1665,8 @@ def main(argv):
         print("all faults cleared")
     elif cmd == "nodes":
         print(" ".join(NODES))
+    elif cmd == "versions":
+        print(json.dumps(node_versions(s, a[0] if a else NODES[0]), indent=2))
     elif cmd == "node-manifests":
         print(json.dumps(node_manifests(), indent=1))
     elif cmd == "status-patch":

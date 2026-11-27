@@ -1,0 +1,4 @@
+# root@h100-03:~# systemctl status nvidia-fabricmanager
+● nvidia-fabricmanager.service - NVIDIA fabric manager service
+     Loaded: loaded (/usr/lib/systemd/system/nvidia-fabricmanager.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-11-15 21:49:00 AEDT

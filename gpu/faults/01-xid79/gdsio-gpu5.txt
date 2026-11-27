@@ -1,0 +1,2 @@
+# root@h100-03:~# gdsio -D /mnt/vast/gds -d 5 -w 8 -s 8G -i 1M -x 0 -I 0   (after kubectl drain)
+cuFile error: cudaSetDevice(5) failed: no CUDA-capable device is detected

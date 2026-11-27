@@ -13,7 +13,7 @@ Loading IBDIAG from: /usr/lib/x86_64-linux-gnu/ibdiag2.1
 -I- Links Speed/Width Check finished successfully
 
 -I- PM Counters Check (thresholds from ibdiag config)
--W- lid=0x0025 guid=0x946dae030041c0de dev=4129 Port=1 "h100-03 mlx5_5"  Performance counter: symbol_error_counter Value=3001 (threshold=200)
+-W- lid=0x0025 guid=0x946dae030041c0de dev=4129 Port=1 "h100-03 mlx5_5"  Performance counter: symbol_error_counter Value=3000 (threshold=200)
 -W- lid=0x0025 guid=0x946dae030041c0de dev=4129 Port=1 "h100-03 mlx5_5"  Performance counter: port_rcv_errors Value=225 (threshold=50)
 
 -I- Stage                     Warnings   Errors     Comment

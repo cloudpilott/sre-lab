@@ -1,0 +1,8 @@
+# root@h100-03:~# systemctl status nvidia-fabricmanager
+× nvidia-fabricmanager.service - NVIDIA fabric manager service
+     Loaded: loaded (/usr/lib/systemd/system/nvidia-fabricmanager.service; enabled; preset: enabled)
+     Active: failed (Result: exit-code) since Sun 2026-11-15 21:49:00 AEDT
+    Process: 2871 ExecStart=/usr/bin/nv-fabricmanager -c /usr/share/nvidia/nvswitch/fabricmanager.cfg (code=exited, status=1/FAILURE)
+
+Nov 15 21:49:00 h100-03 nv-fabricmanager[2871]: fabric manager NVIDIA GPU driver interface version 580.105.08 don't match with Fabric Manager version 580.95.05. Please update with matching NVIDIA driver package.
+Nov 15 21:49:00 h100-03 systemd[1]: nvidia-fabricmanager.service: Failed with result 'exit-code'.

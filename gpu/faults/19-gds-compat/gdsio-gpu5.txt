@@ -1,0 +1,2 @@
+# root@h100-03:~# gdsio -D /mnt/vast/gds -d 5 -w 8 -s 8G -i 1M -x 0 -I 0   (after kubectl drain)
+IoType: READ XferType: GPUD Threads: 8 DataSetSize: 8388608/8388608(KiB) IOSize: 1024(KiB) Throughput: 1.898716 GiB/sec, Avg_Latency: 4114.621857 usecs ops: 8192 total_time 4.213373 secs

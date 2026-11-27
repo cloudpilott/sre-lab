@@ -1,0 +1,18 @@
+# root@h100-03:~# nvbandwidth   (after kubectl drain)
+nvbandwidth Version: v0.8
+Built from Git version: v0.8
+
+CUDA Runtime Version: 13000
+CUDA Driver Version: 13000
+Driver Version: 580.105.08
+
+Device 0: NVIDIA H100 80GB HBM3 (00000000:18:00)
+Device 1: NVIDIA H100 80GB HBM3 (00000000:2A:00)
+Device 2: NVIDIA H100 80GB HBM3 (00000000:3A:00)
+Device 3: NVIDIA H100 80GB HBM3 (00000000:5D:00)
+Device 4: NVIDIA H100 80GB HBM3 (00000000:9A:00)
+Device 5: NVIDIA H100 80GB HBM3 (00000000:AB:00)
+Device 6: NVIDIA H100 80GB HBM3 (00000000:BA:00)
+Device 7: NVIDIA H100 80GB HBM3 (00000000:DB:00)
+
+CUDA error 802: system not yet initialized (NVSwitch fabric not ready: is nvidia-fabricmanager running?)

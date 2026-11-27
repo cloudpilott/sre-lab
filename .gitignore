@@ -5,6 +5,7 @@ kubeconfig
 
 # Runtime fault state of the simulators (recreated by ./lab.sh gpu|ceph up / clear).
 gpu/state.json
+gpu/reports/
 ceph/state.json
 
 # Logs (the OpenStack deploy log can contain generated passwords).

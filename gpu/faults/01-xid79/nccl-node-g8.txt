@@ -1,0 +1,13 @@
+# root@h100-03:~# all_reduce_perf -b 1M -e 8G -f 4 -g 8   (after kubectl drain)
+# nThread 1 nGpus 8 minBytes 1048576 maxBytes 8589934592 step: 4(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid  48000 on  h100-03 device  0 [0x18] NVIDIA H100 80GB HBM3
+#  Rank  1 Group  0 Pid  48000 on  h100-03 device  1 [0x2a] NVIDIA H100 80GB HBM3
+#  Rank  2 Group  0 Pid  48000 on  h100-03 device  2 [0x3a] NVIDIA H100 80GB HBM3
+#  Rank  3 Group  0 Pid  48000 on  h100-03 device  3 [0x5d] NVIDIA H100 80GB HBM3
+#  Rank  4 Group  0 Pid  48000 on  h100-03 device  4 [0x9a] NVIDIA H100 80GB HBM3
+#  Rank  6 Group  0 Pid  48000 on  h100-03 device  6 [0xba] NVIDIA H100 80GB HBM3
+#  Rank  7 Group  0 Pid  48000 on  h100-03 device  7 [0xdb] NVIDIA H100 80GB HBM3
+#
+h100-03: CUDA driver error: device 5 not found (only 7 visible devices)

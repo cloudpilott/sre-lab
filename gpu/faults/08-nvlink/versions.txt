@@ -1,0 +1,4 @@
+# root@h100-03:~# racadm getversion
+ Bios Version                     = 2.7.4
+ iDRAC Version                    = 7.20.30.50
+ Lifecycle Controller Version     = 7.20.30.50

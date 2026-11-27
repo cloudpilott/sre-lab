@@ -1,0 +1,26 @@
+# root@h100-03:~# all_reduce_perf -b 1M -e 8G -f 4 -g 8   (after kubectl drain)
+# nThread 1 nGpus 8 minBytes 1048576 maxBytes 8589934592 step: 4(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid  48000 on  h100-03 device  0 [0x18] NVIDIA H100 80GB HBM3
+#  Rank  1 Group  0 Pid  48000 on  h100-03 device  1 [0x2a] NVIDIA H100 80GB HBM3
+#  Rank  2 Group  0 Pid  48000 on  h100-03 device  2 [0x3a] NVIDIA H100 80GB HBM3
+#  Rank  3 Group  0 Pid  48000 on  h100-03 device  3 [0x5d] NVIDIA H100 80GB HBM3
+#  Rank  4 Group  0 Pid  48000 on  h100-03 device  4 [0x9a] NVIDIA H100 80GB HBM3
+#  Rank  5 Group  0 Pid  48000 on  h100-03 device  5 [0xab] NVIDIA H100 80GB HBM3
+#  Rank  6 Group  0 Pid  48000 on  h100-03 device  6 [0xba] NVIDIA H100 80GB HBM3
+#  Rank  7 Group  0 Pid  48000 on  h100-03 device  7 [0xdb] NVIDIA H100 80GB HBM3
+#
+#       size         count      type   redop    root     time   algbw   busbw #wrong
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)
+     1048576        262144     float     sum      -1     62.4   16.81   29.42      0
+     4194304       1048576     float     sum      -1    124.0   33.84   59.22      0
+    16777216       4194304     float     sum      -1    247.8   67.71  118.50      0
+    67108864      16777216     float     sum      -1    496.1  135.26  236.70      0
+   268435456      67108864     float     sum      -1   1000.5  268.30  469.52      0
+  1073741824     268435456     float     sum      -1   3988.6  269.20  471.11      0
+  4294967296    1073741824     float     sum      -1  15949.7  269.28  471.24      0
+# Out of bounds values : 0 OK
+# Avg bus bandwidth    : 328.133 
+#
+# (acceptance baseline for one 8x H100 SXM node at 8 GB: ~480 GB/s busbw over NVLink/NVSwitch)

@@ -1,0 +1,22 @@
+# root@h100-03:~# hpl.sh --dat hpl-8gpu.dat   (after kubectl drain)
+================================================================================
+HPL-NVIDIA 25.09.0  -- NVIDIA accelerated HPL benchmark -- NVIDIA
+================================================================================
+
+The following parameter values will be used:
+
+N        :  376832
+NB       :    1024
+PMAP     : Column-major process mapping
+P        :       4
+Q        :       2
+PFACT    :    Left
+NBMIN    :       2
+RFACT    :    Left
+BCAST    :  2ringM
+DEPTH    :       1
+SWAP     : Spread-roll (long)
+
+--------------------------------------------------------------------------------
+CUDA error at GPU 5: unspecified launch failure (Xid 74 NVLink fatal error during panel broadcast)
+HPL run aborted on h100-03.

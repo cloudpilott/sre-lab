@@ -1,0 +1,2 @@
+# root@h100-03:~# dcgmi diag -r 3   (after kubectl drain)
+Error: Unable to complete diagnostic for group 0. Return: The GPU fabric is not initialized: NVSwitch Fabric Manager is not running (check 'systemctl status nvidia-fabricmanager').

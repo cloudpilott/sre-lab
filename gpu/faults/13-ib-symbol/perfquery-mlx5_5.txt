@@ -2,7 +2,7 @@
 # Port counters: Lid 37 port 1 (CapMask: 0x5A00)
 PortSelect:......................1
 CounterSelect:...................0x0000
-SymbolErrorCounter:..............3001
+SymbolErrorCounter:..............3000
 LinkErrorRecoveryCounter:........0
 LinkDownedCounter:...............0
 PortRcvErrors:...................225
@@ -19,4 +19,4 @@ PortXmitData:....................4294967295
 PortRcvData:.....................4294967295
 PortXmitPkts:....................4294967295
 PortRcvPkts:.....................4294967295
-PortXmitWait:....................1283396698
+PortXmitWait:....................1333720594

@@ -2,7 +2,7 @@
 
 ==============NVSMI LOG==============
 
-Timestamp                                 : Thu Nov 26 22:08:28 2026
+Timestamp                                 : Fri Nov 27 22:06:18 2026
 Driver Version                            : 580.95.05
 CUDA Version                              : 13.0
 
@@ -28,6 +28,11 @@ GPU 00000000:AB:00.0
                 Current                   : 16x
         Replays Since Reset               : 1
         Replay Number Rollovers           : 0
+    Fabric
+        State                             : Completed
+        Status                            : Success
+        CliqueId                          : 32766
+        ClusterUUID                       : 9db75bc8-0000-4000-8000-07bbeade9bf5
     Clocks Event Reasons
         Idle                              : Active
         Applications Clocks Setting       : Not Active
@@ -75,16 +80,16 @@ GPU 00000000:AB:00.0
             Low                           : 0
             None                          : 1
     Temperature
-        GPU Current Temp                  : 34 C
-        GPU T.Limit Temp                  : 53 C
+        GPU Current Temp                  : 33 C
+        GPU T.Limit Temp                  : 54 C
         GPU Shutdown Temp                 : 92 C
         GPU Slowdown Temp                 : 87 C
         GPU Max Operating Temp            : 85 C
-        Memory Current Temp               : 37 C
+        Memory Current Temp               : 36 C
         Memory Max Operating Temp         : 95 C
     GPU Power Readings
-        Average Power Draw                : 64.90 W
-        Instantaneous Power Draw          : 68.00 W
+        Average Power Draw                : 69.90 W
+        Instantaneous Power Draw          : 73.00 W
         Current Power Limit               : 700.00 W
         Default Power Limit               : 700.00 W
         Max Power Limit                   : 700.00 W

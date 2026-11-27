@@ -1,0 +1,15 @@
+{
+  "_comment": "Build standard for the H100 GPU nodes (frozen design). atp.py fails any node that differs. Change it only through a reviewed PR.",
+  "kernel": "6.8.0-87-generic",
+  "driver": "580.95.05",
+  "cuda": "13.0",
+  "fabricmanager": "580.95.05",
+  "dcgm": "4.4.1",
+  "vbios": "96.00.99.00.01",
+  "doca_ofed": "OFED-internal-25.07-0.9.7",
+  "hca_fw": "28.45.1020",
+  "nvidia_fs": "2.26.6",
+  "gds": "1.15.1.6",
+  "bios": "2.7.4",
+  "idrac": "7.20.30.50"
+}

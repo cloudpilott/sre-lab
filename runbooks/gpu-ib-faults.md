@@ -89,5 +89,22 @@ No errors anywhere, yet ring all-reduce runs at the slowest link, so bus bandwid
 downstream (another tenant, hotspot uplink, routing). **Not a node fault. Don't RMA.** Look fabric-wide, at adaptive
 routing/SHARP, and at job placement.
 
+## Build standard (locked versions)
+Every node must match `gpu/locked-versions.json` before it takes customer work: kernel, driver, Fabric Manager, CUDA,
+DCGM, VBIOS, DOCA-OFED, HCA firmware, nvidia_fs/GDS, BIOS, iDRAC. Check with `./lab.sh gpu compliance`, by hand with
+`cat /proc/driver/nvidia/version`, `nv-fabricmanager --version`, `flint -d mlx5_N q`, `racadm getversion`, `uname -r`, `gdscheck -p`.
+- **After any part swap or re-image, rerun compliance.** RMA replacement cards often ship with older firmware.
+- **Driver and Fabric Manager are one unit.** If they differ, FM won't start (`systemctl status nvidia-fabricmanager`:
+  *don't match with Fabric Manager version*), `nvidia-smi -q` shows Fabric State *In Progress*, and CUDA fails with error 802.
+- **Pin the kernel.** A newer kernel without a rebuilt `nvidia_fs` silently drops GPUDirect Storage to compatibility mode
+  (`lsmod` has no nvidia_fs, `gdscheck -p` shows N/A, `gdsio` ~1/3 speed).
+- **Link width is a silent failure.** A GPU at PCIe x8 logs no error: check `nvidia-smi -q -d PCI` *Link Width Current*
+  and `lspci -vv | grep LnkSta` (*downgraded*). Reseat via remote hands.
+
+## Acceptance (ATP) before handover
+`./lab.sh gpu atp` (see `gpu/README.md`). Treat the first failing check on a node as the root cause and the rest as
+consequences. Record results against thresholds, raise one defect per root cause (Config / Hardware rework / RMA),
+rerun the ATP on the reworked node, and attach the report to the handover.
+
 ## After
 Postmortem template in EXERCISES.md. For hardware faults, record the node, GPU/HCA, serial/GUID, Xid/counters, action, and RMA ticket.

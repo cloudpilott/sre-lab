@@ -1,0 +1,81 @@
+# root@h100-03:~# lspci -vv
+18:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+1a:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+2a:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+3a:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+3c:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+4d:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+5d:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+5e:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+9a:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+9c:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+ab:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x8 (downgraded)
+	Kernel driver in use: nvidia
+
+ba:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+bc:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+cc:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
+db:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: nvidia
+
+dc:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+		LnkCap:	Port #0, Speed 32GT/s, Width x16, ASPM not supported
+		LnkSta:	Speed 32GT/s, Width x16
+	Kernel driver in use: mlx5_core
+
