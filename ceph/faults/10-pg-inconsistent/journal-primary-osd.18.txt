@@ -1,0 +1,8 @@
+# root@ceph-05:~# journalctl -u ceph-osd@18
+Oct 30 11:00:40 ceph-05 Started Ceph osd.18 for 9985a696-36f7-4dcc-a63b-cbf2f92d64f7.
+Oct 30 11:00:52 ceph-05 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-18[31937]: osd.18 3990 load_pgs opened 120 pgs
+Oct 30 11:00:53 ceph-05 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-18[31937]: osd.18 3990 done with init, starting boot process
+Nov 27 06:44:29 ceph-05 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-18[31937]: log_channel(cluster) log [DBG] : 3.e deep-scrub starts
+Nov 27 06:45:57 ceph-05 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-18[31937]: log_channel(cluster) log [ERR] : 3.e shard 13 soid 3:0364b0b6:::1000000b2c1.00003f90:head : candidate had a read error
+Nov 27 06:45:58 ceph-05 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-18[31937]: log_channel(cluster) log [ERR] : 3.e deep-scrub 0 missing, 1 inconsistent objects
+Nov 27 06:45:59 ceph-05 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-18[31937]: log_channel(cluster) log [ERR] : 3.e deep-scrub 2 errors

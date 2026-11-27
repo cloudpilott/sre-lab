@@ -1,0 +1,2 @@
+# root@ceph-01:~# ceph pg dump_stuck
+ok

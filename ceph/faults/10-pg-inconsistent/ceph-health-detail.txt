@@ -1,0 +1,5 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_ERR 2 scrub errors; Possible data damage: 1 pg inconsistent
+[ERR] OSD_SCRUB_ERRORS: 2 scrub errors
+[ERR] PG_DAMAGED: Possible data damage: 1 pg inconsistent
+    pg 3.e is active+clean+inconsistent, acting [18,1,13]

@@ -1,0 +1,37 @@
+# Picked up automatically by the Grafana sidecar (label grafana_dashboard=1).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: podinfo-golden-signals
+  namespace: monitoring
+  labels: { grafana_dashboard: "1" }
+data:
+  podinfo-golden-signals.json: |
+    {
+      "title": "podinfo - Golden Signals",
+      "uid": "podinfo-golden",
+      "schemaVersion": 39,
+      "time": { "from": "now-1h", "to": "now" },
+      "refresh": "15s",
+      "panels": [
+        { "type": "timeseries", "title": "Traffic (req/s)", "gridPos": {"x":0,"y":0,"w":12,"h":8},
+          "targets": [{ "expr": "sum by (status) (rate(http_requests_total{namespace=\"demo\"}[1m]))", "legendFormat": "{{status}}" }] },
+        { "type": "timeseries", "title": "Error ratio (5xx)", "gridPos": {"x":12,"y":0,"w":12,"h":8},
+          "fieldConfig": { "defaults": { "unit": "percentunit" } },
+          "targets": [{ "expr": "sum(rate(http_requests_total{namespace=\"demo\",status=~\"5..\"}[1m])) / sum(rate(http_requests_total{namespace=\"demo\"}[1m]))" }] },
+        { "type": "timeseries", "title": "Latency p50 / p95 / p99", "gridPos": {"x":0,"y":8,"w":12,"h":8},
+          "fieldConfig": { "defaults": { "unit": "s" } },
+          "targets": [
+            { "expr": "histogram_quantile(0.50, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"demo\"}[1m])))", "legendFormat": "p50" },
+            { "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"demo\"}[1m])))", "legendFormat": "p95" },
+            { "expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"demo\"}[1m])))", "legendFormat": "p99" } ] },
+        { "type": "timeseries", "title": "Saturation: CPU vs request, replicas", "gridPos": {"x":12,"y":8,"w":12,"h":8},
+          "targets": [
+            { "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"demo\",container=\"podinfo\"}[1m]))", "legendFormat": "cpu cores used" },
+            { "expr": "sum(kube_pod_container_resource_requests{namespace=\"demo\",container=\"podinfo\",resource=\"cpu\"})", "legendFormat": "cpu requested" },
+            { "expr": "count(kube_pod_status_ready{namespace=\"demo\",condition=\"true\"} == 1)", "legendFormat": "ready pods" } ] },
+        { "type": "logs", "title": "podinfo logs", "gridPos": {"x":0,"y":16,"w":24,"h":8},
+          "datasource": { "type": "loki", "uid": "loki" },
+          "targets": [{ "expr": "{namespace=\"demo\", app=\"podinfo\"}", "datasource": { "type": "loki", "uid": "loki" } }] }
+      ]
+    }

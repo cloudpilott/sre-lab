@@ -1,0 +1,45 @@
+# root@ceph-01:~# ceph orch ps
+NAME                       HOST     PORTS             STATUS         REFRESHED  AGE  MEM USE  MEM LIM  VERSION    IMAGE ID      CONTAINER ID
+mon.ceph-01                ceph-01                    running (3w)   9m ago     9w      1.1G    2048M  19.2.3     3917d7a43e3d  dadd2ecb2fa8
+mon.ceph-02                ceph-02                    running (3w)   9m ago     9w      1.3G    2048M  19.2.3     3917d7a43e3d  d565669388b5
+mon.ceph-03                ceph-03                    running (3w)   4m ago     9w      1.2G    2048M  19.2.3     3917d7a43e3d  b15b1d0f8884
+mgr.ceph-01.plreuk         ceph-01  *:9283,8765       running (3w)   2m ago     9w      899M        -  19.2.3     3917d7a43e3d  f107af1af40c
+mgr.ceph-02.arkjwm         ceph-02  *:9283,8765       running (3w)   5m ago     9w      899M        -  19.2.3     3917d7a43e3d  fdf5a89f4a93
+mds.ckpt.ceph-04.vwmrjb    ceph-04                    running (3w)   8m ago     9w      2.4G        -  19.2.3     3917d7a43e3d  c83c6ce93ece
+mds.ckpt.ceph-05.mpcgor    ceph-05                    running (3w)   6m ago     9w      2.4G        -  19.2.3     3917d7a43e3d  05b874f0881e
+osd.0                      ceph-01                    running (3w)   9m ago     9w      3.8G    4096M  19.2.3     3917d7a43e3d  2a13b1014e54
+osd.1                      ceph-01                    running (3w)   6m ago     9w      3.1G    4096M  19.2.3     3917d7a43e3d  0e32ce869724
+osd.2                      ceph-01                    running (3w)   3m ago     9w      3.8G    4096M  19.2.3     3917d7a43e3d  abe006c4be71
+osd.3                      ceph-01                    running (3w)   1m ago     9w      3.5G    4096M  19.2.3     3917d7a43e3d  b1a37e9e76a0
+osd.4                      ceph-02                    running (3w)   8m ago     9w      3.4G    4096M  19.2.3     3917d7a43e3d  9aa51f81ace9
+osd.5                      ceph-02                    running (3w)   1m ago     9w      3.1G    4096M  19.2.3     3917d7a43e3d  ad2b2d72ac5c
+osd.6                      ceph-02                    running (3w)   2m ago     9w      3.6G    4096M  19.2.3     3917d7a43e3d  590111689b17
+osd.7                      ceph-02                    running (3w)   8m ago     9w      3.3G    4096M  19.2.3     3917d7a43e3d  2d349d28f20f
+osd.8                      ceph-03                    running (3w)   1m ago     9w      3.1G    4096M  19.2.3     3917d7a43e3d  da4c0bb4c6d6
+osd.9                      ceph-03                    running (3w)   3m ago     9w      3.1G    4096M  19.2.3     3917d7a43e3d  3daf472f461d
+osd.10                     ceph-03                    running (3w)   6m ago     9w      3.4G    4096M  19.2.3     3917d7a43e3d  0998a760052f
+osd.11                     ceph-03                    running (3w)   9m ago     9w      3.2G    4096M  19.2.3     3917d7a43e3d  c0e91cdf02d9
+osd.12                     ceph-04                    running (3w)   4m ago     9w      3.2G    4096M  19.2.3     3917d7a43e3d  880b2debc37f
+osd.13                     ceph-04                    running (3w)   7m ago     9w      3.4G    4096M  19.2.3     3917d7a43e3d  d44e8292c014
+osd.14                     ceph-04                    running (3w)   8m ago     9w      3.8G    4096M  19.2.3     3917d7a43e3d  80192178d21d
+osd.15                     ceph-04                    running (3w)   2m ago     9w      3.4G    4096M  19.2.3     3917d7a43e3d  389794c00d45
+osd.16                     ceph-05                    running (3w)   3m ago     9w      3.6G    4096M  19.2.3     3917d7a43e3d  2b69cc2972ec
+osd.17                     ceph-05                    running (3w)   3m ago     9w      3.4G    4096M  19.2.3     3917d7a43e3d  2df32072d316
+osd.18                     ceph-05                    running (3w)   7m ago     9w      3.1G    4096M  19.2.3     3917d7a43e3d  28b24c440e88
+osd.19                     ceph-05                    running (3w)   9m ago     9w      3.5G    4096M  19.2.3     3917d7a43e3d  348d4e23c913
+osd.20                     ceph-06                    running (3w)   3m ago     9w      3.7G    4096M  19.2.3     3917d7a43e3d  47cba68d5859
+osd.21                     ceph-06                    running (3w)   2m ago     9w      3.7G    4096M  19.2.3     3917d7a43e3d  1b4eb9003e47
+osd.22                     ceph-06                    running (3w)   6m ago     9w      3.2G    4096M  19.2.3     3917d7a43e3d  259e0f324aa1
+osd.23                     ceph-06                    running (3w)   6m ago     9w      3.8G    4096M  19.2.3     3917d7a43e3d  b339d546ca3b
+node-exporter.ceph-01      ceph-01  *:9100            running (3w)   2m ago     9w       20M        -  19.2.3     3917d7a43e3d  f1b4c5df3053
+crash.ceph-01              ceph-01                    running (3w)   6m ago     9w       10M        -  19.2.3     3917d7a43e3d  9865a27ce174
+node-exporter.ceph-02      ceph-02  *:9100            running (3w)   5m ago     9w       20M        -  19.2.3     3917d7a43e3d  f0fbf4816a39
+crash.ceph-02              ceph-02                    running (3w)   3m ago     9w       10M        -  19.2.3     3917d7a43e3d  087126a0c0db
+node-exporter.ceph-03      ceph-03  *:9100            running (3w)   5m ago     9w       20M        -  19.2.3     3917d7a43e3d  7aabc95df1b5
+crash.ceph-03              ceph-03                    running (3w)   9m ago     9w       10M        -  19.2.3     3917d7a43e3d  690506eaeac5
+node-exporter.ceph-04      ceph-04  *:9100            running (3w)   7m ago     9w       20M        -  19.2.3     3917d7a43e3d  f72d76d8898b
+crash.ceph-04              ceph-04                    running (3w)   4m ago     9w       10M        -  19.2.3     3917d7a43e3d  cef30e268d77
+node-exporter.ceph-05      ceph-05  *:9100            running (3w)   1m ago     9w       20M        -  19.2.3     3917d7a43e3d  bf492ef6a41d
+crash.ceph-05              ceph-05                    running (3w)   1m ago     9w       10M        -  19.2.3     3917d7a43e3d  27d688b7b4e1
+node-exporter.ceph-06      ceph-06  *:9100            running (3w)   2m ago     9w       20M        -  19.2.3     3917d7a43e3d  a6d49df6d54a
+crash.ceph-06              ceph-06                    running (3w)   1m ago     9w       10M        -  19.2.3     3917d7a43e3d  dbf2d6ca2491

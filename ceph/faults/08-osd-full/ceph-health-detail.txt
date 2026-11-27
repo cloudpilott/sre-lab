@@ -1,0 +1,9 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_ERR 1 full osd(s); 4 pool(s) full
+[ERR] OSD_FULL: 1 full osd(s)
+    osd.13 is full
+[WRN] POOL_FULL: 4 pool(s) full
+    pool '.mgr' is full (no space)
+    pool 'rbd' is full (no space)
+    pool 'cephfs.ckpt.data' is full (no space)
+    pool 'cephfs.ckpt.meta' is full (no space)

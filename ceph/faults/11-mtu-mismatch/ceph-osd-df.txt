@@ -1,0 +1,28 @@
+# root@ceph-01:~# ceph osd df
+ID  CLASS  WEIGHT   REWEIGHT  SIZE     RAW USE  DATA     OMAP     META     AVAIL    %USE   VAR   PGS  STATUS
+ 0   nvme  6.98599   1.00000  7.0 TiB  4.2 TiB  4.2 TiB   11 MiB   11 GiB  2.8 TiB  59.97  1.02   89      up
+ 1   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB   13 MiB  9.7 GiB  2.9 TiB  58.84  1.00  114      up
+ 2   nvme  6.98599   1.00000  7.0 TiB  4.2 TiB  4.2 TiB   15 MiB   12 GiB  2.8 TiB  60.59  1.03  103      up
+ 3   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.0 TiB   12 MiB   10 GiB  2.9 TiB  58.03  0.99  105      up
+ 4   nvme  6.98599   1.00000  7.0 TiB  3.9 TiB  3.8 TiB   16 MiB   12 GiB  3.1 TiB  55.25  0.94   94      up
+ 5   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB  9.0 MiB   10 GiB  2.9 TiB  59.14  1.01  105      up
+ 6   nvme  6.98599   1.00000  7.0 TiB  4.0 TiB  4.0 TiB   16 MiB   11 GiB  3.0 TiB  56.95  0.97  115      up
+ 7   nvme  6.98599   1.00000  7.0 TiB  4.3 TiB  4.3 TiB   10 MiB  9.6 GiB  2.7 TiB  61.28  1.05  110      up
+ 8   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB   13 MiB   11 GiB  2.9 TiB  59.05  1.01   91      up
+ 9   nvme  6.98599   1.00000  7.0 TiB  4.0 TiB  4.0 TiB   15 MiB   10 GiB  3.0 TiB  57.20  0.98  115      up
+10   nvme  6.98599   1.00000  7.0 TiB  4.2 TiB  4.2 TiB   10 MiB   10 GiB  2.8 TiB  59.72  1.02  100      up
+11   nvme  6.98599   1.00000  7.0 TiB  3.9 TiB  3.9 TiB  9.0 MiB   12 GiB  3.1 TiB  55.94  0.95  101      up
+12   nvme  6.98599   1.00000      0 B      0 B      0 B      0 B      0 B      0 B      0     0    0    down
+13   nvme  6.98599   1.00000      0 B      0 B      0 B      0 B      0 B      0 B      0     0    0    down
+14   nvme  6.98599   1.00000      0 B      0 B      0 B      0 B      0 B      0 B      0     0    0    down
+15   nvme  6.98599   1.00000      0 B      0 B      0 B      0 B      0 B      0 B      0     0    0    down
+16   nvme  6.98599   1.00000  7.0 TiB  4.3 TiB  4.3 TiB   15 MiB   12 GiB  2.7 TiB  61.23  1.05  107      up
+17   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB   11 MiB   11 GiB  2.9 TiB  58.84  1.00   91      up
+18   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB   16 MiB   12 GiB  2.9 TiB  59.15  1.01  120      up
+19   nvme  6.98599   1.00000  7.0 TiB  3.8 TiB  3.8 TiB   14 MiB   12 GiB  3.2 TiB  54.84  0.94  107      up
+20   nvme  6.98599   1.00000  7.0 TiB  4.0 TiB  4.0 TiB   15 MiB   11 GiB  3.0 TiB  57.36  0.98   90      up
+21   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB   13 MiB   11 GiB  2.8 TiB  59.29  1.01  103      up
+22   nvme  6.98599   1.00000  7.0 TiB  4.2 TiB  4.2 TiB   16 MiB   11 GiB  2.8 TiB  60.07  1.03  108      up
+23   nvme  6.98599   1.00000  7.0 TiB  4.1 TiB  4.1 TiB  8.0 MiB   10 GiB  2.9 TiB  59.03  1.01  114      up
+                       TOTAL  140 TiB   82 TiB   82 TiB  290 MiB  251 GiB   58 TiB  58.59
+MIN/MAX VAR: 0.94/1.05  STDDEV: 1.79

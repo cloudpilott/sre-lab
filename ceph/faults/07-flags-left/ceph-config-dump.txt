@@ -1,0 +1,13 @@
+# root@ceph-01:~# ceph config dump
+WHO           MASK  LEVEL     OPTION                                 VALUE                                                                    RO
+global              basic     container_image                        quay.io/ceph/ceph@sha256:b29814cf5792e684cd75d6a7fce7a67a11887e312f87ca2ac2496d81f365ff72 *
+global              advanced  mon_osd_down_out_interval              600                                                                      
+global              advanced  osd_pool_default_size                  3                                                                        
+global              advanced  public_network                         10.10.0.0/24                                                             *
+global              advanced  cluster_network                        10.20.0.0/24                                                             *
+mon                 advanced  auth_allow_insecure_global_id_reclaim  false                                                                    
+mgr                 advanced  mgr/cephadm/container_init             True                                                                     *
+mgr                 advanced  mgr/dashboard/ssl_server_port          8443                                                                     *
+osd                 advanced  osd_memory_target_autotune             true                                                                     
+osd                 advanced  osd_mclock_profile                     balanced                                                                 
+mds                 advanced  mds_cache_memory_limit                 17179869184                                                              

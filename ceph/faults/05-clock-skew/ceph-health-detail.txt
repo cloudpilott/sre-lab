@@ -1,0 +1,4 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_WARN clock skew detected on mon.ceph-02
+[WRN] MON_CLOCK_SKEW: clock skew detected on mon.ceph-02
+    mon.ceph-02 clock skew 0.30111s > max 0.05s (latency 0.00105s)

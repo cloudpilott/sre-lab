@@ -1,0 +1,4 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_WARN 1/3 mons down, quorum ceph-01,ceph-03
+[WRN] MON_DOWN: 1/3 mons down, quorum ceph-01,ceph-03
+    mon.ceph-02 (rank 1) addr [v2:10.10.0.12:3300/0,v1:10.10.0.12:6789/0] is down (out of quorum)

@@ -1,0 +1,748 @@
+# Ceph cluster dashboard (simulated storage cluster). Picked up by the Grafana sidecar.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-cluster
+  namespace: monitoring
+  labels: { grafana_dashboard: "1" }
+data:
+  ceph-cluster.json: |
+    {
+     "title": "Ceph Cluster - storage (sim)",
+     "uid": "ceph-cluster",
+     "schemaVersion": 39,
+     "time": {
+      "from": "now-1h",
+      "to": "now"
+     },
+     "refresh": "30s",
+     "tags": [
+      "ceph",
+      "storage"
+     ],
+     "panels": [
+      {
+       "id": 1,
+       "type": "row",
+       "title": "Cluster",
+       "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+       },
+       "collapsed": false,
+       "panels": []
+      },
+      {
+       "id": 2,
+       "type": "stat",
+       "title": "Health",
+       "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 4,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_health_status",
+         "legendFormat": ""
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "mappings": [
+          {
+           "type": "value",
+           "options": {
+            "0": {
+             "text": "HEALTH_OK",
+             "color": "green"
+            },
+            "1": {
+             "text": "HEALTH_WARN",
+             "color": "orange"
+            },
+            "2": {
+             "text": "HEALTH_ERR",
+             "color": "red"
+            }
+           }
+          }
+         ],
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "green",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 1
+           },
+           {
+            "color": "red",
+            "value": 2
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 3,
+       "type": "stat",
+       "title": "OSDs up / in",
+       "gridPos": {
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "sum(ceph_osd_up)",
+         "legendFormat": "up"
+        },
+        {
+         "refId": "B",
+         "expr": "sum(ceph_osd_in)",
+         "legendFormat": "in"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "red",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 23
+           },
+           {
+            "color": "green",
+            "value": 24
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 4,
+       "type": "stat",
+       "title": "Mons in quorum",
+       "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 3,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "sum(ceph_mon_quorum_status)",
+         "legendFormat": ""
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "red",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 2
+           },
+           {
+            "color": "green",
+            "value": 3
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 5,
+       "type": "gauge",
+       "title": "Raw used",
+       "gridPos": {
+        "x": 11,
+        "y": 1,
+        "w": 3,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_cluster_total_used_bytes / ceph_cluster_total_bytes",
+         "legendFormat": ""
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "percentunit",
+         "min": 0,
+         "max": 1,
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "green",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 0.75
+           },
+           {
+            "color": "red",
+            "value": 0.85
+           }
+          ]
+         }
+        },
+        "overrides": []
+       }
+      },
+      {
+       "id": 6,
+       "type": "stat",
+       "title": "Fullest OSD",
+       "gridPos": {
+        "x": 14,
+        "y": 1,
+        "w": 3,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "max(ceph_osd_stat_bytes_used / (ceph_osd_stat_bytes > 0))",
+         "legendFormat": ""
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "percentunit",
+         "decimals": 1,
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "green",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 0.85
+           },
+           {
+            "color": "red",
+            "value": 0.95
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 7,
+       "type": "stat",
+       "title": "Pool MAX AVAIL",
+       "gridPos": {
+        "x": 17,
+        "y": 1,
+        "w": 3,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "min(ceph_pool_max_avail)",
+         "legendFormat": ""
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "bytes",
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "red",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 5000000000000.0
+           },
+           {
+            "color": "green",
+            "value": 10000000000000.0
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 8,
+       "type": "stat",
+       "title": "Degraded objects / slow ops",
+       "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_num_objects_degraded",
+         "legendFormat": "degraded"
+        },
+        {
+         "refId": "B",
+         "expr": "ceph_healthcheck_slow_ops",
+         "legendFormat": "slow ops"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "green",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 1
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 9,
+       "type": "table",
+       "title": "Active health checks",
+       "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 9,
+        "h": 8
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_health_detail == 1",
+         "legendFormat": "",
+         "instant": true,
+         "format": "table"
+        }
+       ],
+       "transformations": [
+        {
+         "id": "organize",
+         "options": {
+          "excludeByName": {
+           "Time": true,
+           "Value": true,
+           "__name__": true,
+           "instance": true,
+           "job": true,
+           "namespace": true,
+           "pod": true,
+           "service": true,
+           "endpoint": true,
+           "container": true
+          }
+         }
+        }
+       ]
+      },
+      {
+       "id": 10,
+       "type": "timeseries",
+       "title": "PG states (all pools)",
+       "gridPos": {
+        "x": 9,
+        "y": 5,
+        "w": 15,
+        "h": 8
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "sum(ceph_pg_degraded)",
+         "legendFormat": "degraded"
+        },
+        {
+         "refId": "B",
+         "expr": "sum(ceph_pg_undersized)",
+         "legendFormat": "undersized"
+        },
+        {
+         "refId": "C",
+         "expr": "sum(ceph_pg_remapped)",
+         "legendFormat": "remapped"
+        },
+        {
+         "refId": "D",
+         "expr": "sum(ceph_pg_backfilling)",
+         "legendFormat": "backfilling"
+        },
+        {
+         "refId": "E",
+         "expr": "sum(ceph_pg_backfill_wait)",
+         "legendFormat": "backfill_wait"
+        },
+        {
+         "refId": "F",
+         "expr": "sum(ceph_pg_recovery_wait)",
+         "legendFormat": "recovery_wait"
+        },
+        {
+         "refId": "G",
+         "expr": "sum(ceph_pg_inconsistent)",
+         "legendFormat": "inconsistent"
+        },
+        {
+         "refId": "H",
+         "expr": "sum(ceph_pg_peering)",
+         "legendFormat": "peering"
+        },
+        {
+         "refId": "I",
+         "expr": "sum(ceph_pg_total) - sum(ceph_pg_active)",
+         "legendFormat": "inactive"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "custom": {
+          "lineWidth": 2,
+          "fillOpacity": 10
+         }
+        },
+        "overrides": []
+       }
+      },
+      {
+       "id": 11,
+       "type": "row",
+       "title": "OSDs",
+       "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 24,
+        "h": 1
+       },
+       "collapsed": false,
+       "panels": []
+      },
+      {
+       "id": 12,
+       "type": "state-timeline",
+       "title": "OSD up (1) / down (0)",
+       "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 12,
+        "h": 10
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_osd_up * on(ceph_daemon) group_left(hostname) ceph_osd_metadata",
+         "legendFormat": "{{hostname}} {{ceph_daemon}}"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "mappings": [
+          {
+           "type": "value",
+           "options": {
+            "0": {
+             "text": "down",
+             "color": "red"
+            },
+            "1": {
+             "text": "up",
+             "color": "green"
+            }
+           }
+          }
+         ],
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "red",
+            "value": null
+           },
+           {
+            "color": "green",
+            "value": 1
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "showValue": "never",
+        "rowHeight": 0.8
+       }
+      },
+      {
+       "id": 13,
+       "type": "bargauge",
+       "title": "OSD %USE",
+       "gridPos": {
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 10
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_osd_stat_bytes_used / (ceph_osd_stat_bytes > 0) * on(ceph_daemon) group_left(hostname) ceph_osd_metadata",
+         "legendFormat": "{{ceph_daemon}} ({{hostname}})"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "percentunit",
+         "min": 0,
+         "max": 1,
+         "thresholds": {
+          "mode": "absolute",
+          "steps": [
+           {
+            "color": "green",
+            "value": null
+           },
+           {
+            "color": "orange",
+            "value": 0.85
+           },
+           {
+            "color": "red",
+            "value": 0.95
+           }
+          ]
+         }
+        },
+        "overrides": []
+       },
+       "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+         "calcs": [
+          "lastNotNull"
+         ]
+        }
+       }
+      },
+      {
+       "id": 14,
+       "type": "timeseries",
+       "title": "Top 5 OSD commit latency",
+       "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "topk(5, ceph_osd_commit_latency_ms)",
+         "legendFormat": "{{ceph_daemon}}"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "ms"
+        },
+        "overrides": []
+       }
+      },
+      {
+       "id": 15,
+       "type": "timeseries",
+       "title": "PGs per OSD",
+       "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_osd_numpg",
+         "legendFormat": "{{ceph_daemon}}"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+       },
+       "options": {
+        "legend": {
+         "showLegend": false
+        }
+       }
+      },
+      {
+       "id": 16,
+       "type": "row",
+       "title": "Client I/O (checkpoints)",
+       "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 24,
+        "h": 1
+       },
+       "collapsed": false,
+       "panels": []
+      },
+      {
+       "id": 17,
+       "type": "timeseries",
+       "title": "Client throughput",
+       "gridPos": {
+        "x": 0,
+        "y": 33,
+        "w": 12,
+        "h": 8
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "sum(rate(ceph_pool_wr_bytes[2m]))",
+         "legendFormat": "write"
+        },
+        {
+         "refId": "B",
+         "expr": "sum(rate(ceph_pool_rd_bytes[2m]))",
+         "legendFormat": "read"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "Bps"
+        },
+        "overrides": []
+       }
+      },
+      {
+       "id": 18,
+       "type": "timeseries",
+       "title": "Pool % used (vs MAX AVAIL)",
+       "gridPos": {
+        "x": 12,
+        "y": 33,
+        "w": 12,
+        "h": 8
+       },
+       "targets": [
+        {
+         "refId": "A",
+         "expr": "ceph_pool_percent_used * on(pool_id) group_left(name) ceph_pool_metadata",
+         "legendFormat": "{{name}}"
+        }
+       ],
+       "fieldConfig": {
+        "defaults": {
+         "unit": "percentunit",
+         "min": 0,
+         "max": 1
+        },
+        "overrides": []
+       }
+      }
+     ]
+    }

@@ -1,0 +1,2 @@
+# root@ceph-04:~# journalctl -u ceph-osd@12
+ssh: connect to host ceph-04 port 22: No route to host

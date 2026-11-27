@@ -1,0 +1,9 @@
+# root@ceph-01:~# ceph orch host ls
+HOST     ADDR        LABELS              STATUS
+ceph-01  10.10.0.11  _admin,mon,mgr,osd  
+ceph-02  10.10.0.12  _admin,mon,mgr,osd  
+ceph-03  10.10.0.13  mon,osd             
+ceph-04  10.10.0.14  mds,osd             
+ceph-05  10.10.0.15  mds,osd             
+ceph-06  10.10.0.16  osd
+6 hosts in cluster

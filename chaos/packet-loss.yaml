@@ -1,0 +1,11 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata: { name: podinfo-loss, namespace: demo }
+spec:
+  action: loss
+  mode: one
+  selector:
+    namespaces: [demo]
+    labelSelectors: { app.kubernetes.io/name: podinfo }
+  loss: { loss: "30", correlation: "25" }
+  duration: "5m"

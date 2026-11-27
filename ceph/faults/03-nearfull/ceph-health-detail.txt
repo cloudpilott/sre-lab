@@ -1,0 +1,9 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_WARN 1 nearfull osd(s); 4 pool(s) nearfull
+[WRN] OSD_NEARFULL: 1 nearfull osd(s)
+    osd.13 is near full
+[WRN] POOL_NEARFULL: 4 pool(s) nearfull
+    pool '.mgr' is nearfull
+    pool 'rbd' is nearfull
+    pool 'cephfs.ckpt.data' is nearfull
+    pool 'cephfs.ckpt.meta' is nearfull

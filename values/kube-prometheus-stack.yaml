@@ -1,0 +1,103 @@
+# Trimmed for a 16 GB laptop running k3s.
+# k3s embeds these components in one binary; their endpoints aren't scrapeable -> avoid false alerts.
+kubeControllerManager: { enabled: false }
+kubeScheduler:         { enabled: false }
+kubeProxy:             { enabled: false }
+kubeEtcd:              { enabled: false }
+
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts: [prometheus.__DOMAIN__]
+  prometheusSpec:
+    retention: 2d
+    retentionSize: 4GB
+    scrapeInterval: 30s
+    evaluationInterval: 30s
+    # Pick up ServiceMonitors / PrometheusRules from any namespace (incl. Sloth output).
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    resources:
+      requests: { cpu: 200m, memory: 512Mi }
+      limits:   { memory: 1536Mi }
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes: [ReadWriteOnce]
+          resources: { requests: { storage: 5Gi } }
+
+alertmanager:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts: [alertmanager.__DOMAIN__]
+  alertmanagerSpec:
+    resources:
+      requests: { cpu: 20m, memory: 64Mi }
+      limits:   { memory: 128Mi }
+  # Exercise: replace the null receiver with a Slack/webhook receiver (see EXERCISES.md).
+
+grafana:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts: [grafana.__DOMAIN__]
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits:   { memory: 384Mi }
+  sidecar:
+    dashboards: { enabled: true, label: grafana_dashboard, searchNamespace: ALL }
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      uid: loki
+      url: http://loki.monitoring.svc:3100
+      access: proxy
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: sloth
+          folder: SLOs
+          type: file
+          options: { path: /var/lib/grafana/dashboards/sloth }
+  dashboards:
+    sloth:
+      sloth-high-level: { gnetId: 14643, revision: 2, datasource: Prometheus }
+      sloth-detail:     { gnetId: 14348, revision: 5, datasource: Prometheus }
+
+prometheusOperator:
+  resources:
+    requests: { cpu: 50m, memory: 64Mi }
+    limits:   { memory: 256Mi }
+
+kube-state-metrics:
+  resources:
+    requests: { cpu: 20m, memory: 64Mi }
+    limits:   { memory: 192Mi }
+
+prometheus-node-exporter:
+  # Not on the fake KWOK GPU nodes (./lab.sh gpu): its tolerations would otherwise put "pods" there.
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions: [{ key: type, operator: NotIn, values: [kwok] }]
+  resources:
+    requests: { cpu: 20m, memory: 32Mi }
+    limits:   { memory: 64Mi }
+
+# Fake KWOK nodes (h100-* from ./lab.sh gpu, ceph-0* from ./lab.sh ceph) have no real kubelet: skip them, or kubelet targets show as down.
+# The first rule in each list is the chart default; overriding a list replaces it.
+kubelet:
+  serviceMonitor:
+    relabelings: &skip-kwok
+      - { sourceLabels: [__metrics_path__], targetLabel: metrics_path }
+      - { sourceLabels: [__meta_kubernetes_endpoint_address_target_name], regex: "h100-.*|ceph-0.*", action: drop }
+      - { sourceLabels: [__meta_kubernetes_endpointslice_address_target_name], regex: "h100-.*|ceph-0.*", action: drop }
+    cAdvisorRelabelings: *skip-kwok
+    probesRelabelings: *skip-kwok
+    resourceRelabelings: *skip-kwok

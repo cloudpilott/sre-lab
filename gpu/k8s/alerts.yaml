@@ -1,0 +1,138 @@
+# GPU + InfiniBand alerts for the simulated H100 fleet. Runbook: runbooks/gpu-ib-faults.md
+# The same rules work against real dcgm-exporter + node_exporter (infiniband collector) metrics.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gpu-fleet
+  namespace: gpu-sim
+spec:
+  groups:
+    - name: gpu.hardware
+      rules:
+        - alert: GPUMissing
+          expr: count by (Hostname) (DCGM_FI_DEV_GPU_TEMP) < 8
+          for: 2m
+          labels: { severity: critical }
+          annotations:
+            summary: "{{ $labels.Hostname }} reports only {{ $value }} of 8 GPUs"
+            description: "A GPU vanished from DCGM. Usually Xid 79 (fell off the bus). Check dmesg and lspci (rev ff)."
+            runbook: runbooks/gpu-ib-faults.md#gpumissing
+        - alert: GPUXidHardware
+          expr: |
+            DCGM_FI_DEV_XID_ERRORS == 48 or DCGM_FI_DEV_XID_ERRORS == 63 or DCGM_FI_DEV_XID_ERRORS == 64
+            or DCGM_FI_DEV_XID_ERRORS == 74 or DCGM_FI_DEV_XID_ERRORS == 79
+            or DCGM_FI_DEV_XID_ERRORS == 94 or DCGM_FI_DEV_XID_ERRORS == 95
+          labels: { severity: critical }
+          annotations:
+            summary: "Xid {{ $value }} on {{ $labels.Hostname }} GPU {{ $labels.gpu }}"
+            description: "Hardware-class Xid. Look it up in the Xid table in the runbook before acting."
+            runbook: runbooks/gpu-ib-faults.md#xid-table
+        - alert: GPUXidApplication
+          expr: DCGM_FI_DEV_XID_ERRORS == 13 or DCGM_FI_DEV_XID_ERRORS == 31 or DCGM_FI_DEV_XID_ERRORS == 43
+          labels: { severity: warning }
+          annotations:
+            summary: "Xid {{ $value }} on {{ $labels.Hostname }} GPU {{ $labels.gpu }} (usually the application)"
+            description: "Check ECC, remapped rows and dcgmi diag before blaming the hardware."
+            runbook: runbooks/gpu-ib-faults.md#xid-table
+        - alert: GPUUncorrectableECC
+          expr: DCGM_FI_DEV_ECC_DBE_VOL_TOTAL > 0
+          labels: { severity: critical }
+          annotations:
+            summary: "{{ $value }} uncorrectable ECC error(s) on {{ $labels.Hostname }} GPU {{ $labels.gpu }}"
+            runbook: runbooks/gpu-ib-faults.md#ecc
+        - alert: GPURowRemapPending
+          expr: DCGM_FI_DEV_ROW_REMAP_PENDING == 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }} has a row remap pending: needs a GPU reset"
+            runbook: runbooks/gpu-ib-faults.md#ecc
+        - alert: GPURowRemapFailure
+          expr: DCGM_FI_DEV_ROW_REMAP_FAILURE == 1
+          labels: { severity: critical }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }} is out of spare rows: RMA"
+            runbook: runbooks/gpu-ib-faults.md#ecc
+        - alert: GPUCorrectableECCStorm
+          expr: rate(DCGM_FI_DEV_ECC_SBE_VOL_TOTAL[10m]) * 60 > 10
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }}: {{ $value | humanize }} correctable ECC errors/min"
+            runbook: runbooks/gpu-ib-faults.md#ecc
+        - alert: GPUThermalSlowdown
+          expr: (floor(DCGM_FI_DEV_CLOCK_THROTTLE_REASONS / 64) % 2) == 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }} is in HW thermal slowdown"
+            runbook: runbooks/gpu-ib-faults.md#throttling
+        - alert: GPUPowerBrake
+          expr: (floor(DCGM_FI_DEV_CLOCK_THROTTLE_REASONS / 128) % 2) == 1
+          for: 2m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }}: HW power brake asserted (external: PSU/BMC)"
+            runbook: runbooks/gpu-ib-faults.md#throttling
+        - alert: GPUStraggler
+          expr: |
+            (DCGM_FI_DEV_SM_CLOCK and DCGM_FI_DEV_GPU_UTIL > 50)
+              < 0.8 * scalar(quantile(0.5, DCGM_FI_DEV_SM_CLOCK and DCGM_FI_DEV_GPU_UTIL > 50))
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }} runs at {{ $value }} MHz, well below the fleet median: it slows every synchronous job it is in"
+            runbook: runbooks/gpu-ib-faults.md#throttling
+        - alert: NVLinkCRCErrors
+          expr: rate(DCGM_FI_DEV_NVLINK_CRC_FLIT_ERROR_COUNT_TOTAL[5m]) > 0
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "NVLink CRC errors on {{ $labels.Hostname }} GPU {{ $labels.gpu }}: often comes before Xid 74"
+            runbook: runbooks/gpu-ib-faults.md#nvlink
+        - alert: GPUPCIeReplays
+          expr: rate(DCGM_FI_DEV_PCIE_REPLAY_COUNTER[10m]) * 60 > 50
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} GPU {{ $labels.gpu }}: {{ $value | humanize }} PCIe replays/min"
+            runbook: runbooks/gpu-ib-faults.md#pcie
+
+    - name: infiniband
+      rules:
+        - alert: IBPortDown
+          expr: node_infiniband_state_id != 4
+          for: 2m
+          labels: { severity: critical }
+          annotations:
+            summary: "{{ $labels.Hostname }} {{ $labels.device }} port {{ $labels.port }} is not Active"
+            runbook: runbooks/gpu-ib-faults.md#ib-down
+        - alert: IBLinkFlapping
+          expr: increase(node_infiniband_link_downed_total[30m]) > 2
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} {{ $labels.device }} went down {{ $value | humanize }} times in 30m"
+            runbook: runbooks/gpu-ib-faults.md#ib-flap
+        - alert: IBSymbolErrors
+          expr: rate(node_infiniband_symbol_error_total[10m]) * 60 > 10
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} {{ $labels.device }}: {{ $value | humanize }} symbol errors/min (cable/optic)"
+            runbook: runbooks/gpu-ib-faults.md#ib-errors
+        - alert: IBLinkDegraded
+          expr: node_infiniband_rate_bytes_per_second < 5e10 and on (Hostname, device, port) node_infiniband_state_id == 4
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.Hostname }} {{ $labels.device }} is Active below NDR 400 Gb/s"
+            runbook: runbooks/gpu-ib-faults.md#ib-degraded
+        - alert: IBHighTransmitWait
+          expr: |
+            sum by (Hostname) (rate(node_infiniband_port_transmit_wait_total[10m]))
+              > 5 * scalar(quantile(0.5, sum by (Hostname) (rate(node_infiniband_port_transmit_wait_total[10m]))))
+          for: 10m
+          labels: { severity: info }
+          annotations:
+            summary: "{{ $labels.Hostname }} HCAs are waiting on credits: congestion, not a hardware fault"
+            runbook: runbooks/gpu-ib-faults.md#ib-congestion

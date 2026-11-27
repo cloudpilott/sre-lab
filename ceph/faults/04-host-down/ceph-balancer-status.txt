@@ -1,0 +1,10 @@
+# root@ceph-01:~# ceph balancer status
+{
+    "active": true,
+    "last_optimize_duration": "0:00:00.004211",
+    "last_optimize_started": "Fri Nov 27 07:10:26 2026",
+    "mode": "upmap",
+    "no_optimization_needed": true,
+    "optimize_result": "Unable to find further optimization, or pool(s) pg_num is decreasing, or distribution is already perfect",
+    "plans": []
+}

@@ -1,0 +1,155 @@
+# Ceph alerts for the simulated storage cluster. Runbook: runbooks/ceph-faults.md
+# Names and expressions follow the upstream ceph-mixin (monitoring/ceph-mixin), so they work against a real ceph-mgr.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ceph-cluster
+  namespace: ceph-sim
+spec:
+  groups:
+    - name: ceph.cluster
+      rules:
+        - alert: CephHealthError
+          expr: ceph_health_status == 2
+          for: 5m
+          labels: { severity: critical }
+          annotations:
+            summary: "Ceph is in HEALTH_ERROR"
+            description: "Run 'ceph health detail'. HEALTH_ERR usually means blocked I/O or possible data damage."
+            runbook: runbooks/ceph-faults.md#triage
+        - alert: CephHealthWarning
+          expr: ceph_health_status == 1
+          for: 15m
+          labels: { severity: warning }
+          annotations:
+            summary: "Ceph has been in HEALTH_WARN for 15 minutes"
+            description: "Run 'ceph health detail' to see which health checks are active."
+            runbook: runbooks/ceph-faults.md#triage
+    - name: ceph.mon
+      rules:
+        - alert: CephMonDownQuorumAtRisk
+          expr: |
+            ceph_health_detail{name="MON_DOWN"} == 1
+            and on() count(ceph_mon_quorum_status == 1) <= (floor(count(ceph_mon_metadata) / 2) + 1)
+          for: 30s
+          labels: { severity: critical }
+          annotations:
+            summary: "Monitor quorum is at risk"
+            description: "{{ $value }} monitor(s) down. One more failure and the cluster stops serving I/O."
+            runbook: runbooks/ceph-faults.md#mon-down
+        - alert: CephMonClockSkew
+          expr: ceph_health_detail{name="MON_CLOCK_SKEW"} == 1
+          for: 1m
+          labels: { severity: warning }
+          annotations:
+            summary: "Clock skew detected among monitors"
+            description: "Check 'ceph time-sync-status' and chrony on the monitor hosts."
+            runbook: runbooks/ceph-faults.md#clock-skew
+    - name: ceph.osd
+      rules:
+        - alert: CephOSDDown
+          expr: ceph_health_detail{name="OSD_DOWN"} == 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "An OSD has been marked down"
+            description: "Down OSDs: {{ range query \"(ceph_osd_up == 0) * on(ceph_daemon) group_left(hostname) ceph_osd_metadata\" }}{{ .Labels.ceph_daemon }} on {{ .Labels.hostname }} {{ end }}"
+            runbook: runbooks/ceph-faults.md#osd-down
+        - alert: CephOSDHostDown
+          expr: ceph_health_detail{name="OSD_HOST_DOWN"} == 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "An OSD host is offline"
+            description: "All OSDs of a host are down. Check 'ceph orch host ls' and the BMC."
+            runbook: runbooks/ceph-faults.md#host-down
+        - alert: CephOSDFlapping
+          expr: changes(ceph_osd_up[15m]) * on(ceph_daemon) group_left(hostname) ceph_osd_metadata >= 4
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.ceph_daemon }} on {{ $labels.hostname }} is flapping"
+            description: "The OSD went up/down {{ $value }} times in 15 minutes. Usually a network problem (MTU, packet loss)."
+            runbook: runbooks/ceph-faults.md#flapping
+        - alert: CephOSDTimeoutsClusterNetwork
+          expr: ceph_health_detail{name="OSD_SLOW_PING_TIME_BACK"} == 1
+          for: 1m
+          labels: { severity: warning }
+          annotations:
+            summary: "OSD heartbeats on the cluster (back) network are slow"
+            description: "See 'ceph health detail' for which OSDs/hosts. Check MTU and errors on the cluster NIC."
+            runbook: runbooks/ceph-faults.md#flapping
+        - alert: CephDaemonCrash
+          expr: ceph_health_detail{name="RECENT_CRASH"} == 1
+          for: 1m
+          labels: { severity: critical }
+          annotations:
+            summary: "A Ceph daemon crashed recently"
+            description: "Run 'ceph crash ls' and 'ceph crash info <id>'. Archive with 'ceph crash archive <id>' once handled."
+            runbook: runbooks/ceph-faults.md#osd-down
+        - alert: CephSlowOps
+          expr: ceph_healthcheck_slow_ops > 0
+          for: 30s
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $value }} OSD requests are taking too long"
+            description: "Find the OSD in 'ceph health detail' / 'ceph osd perf', then check its disk."
+            runbook: runbooks/ceph-faults.md#slow-ops
+        - alert: CephOSDNearFull
+          expr: ceph_health_detail{name="OSD_NEARFULL"} == 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "An OSD is over 85% full"
+            description: "Compare %USE and VAR in 'ceph osd df'. One full OSD stops writes to the whole cluster."
+            runbook: runbooks/ceph-faults.md#full
+        - alert: CephOSDFull
+          expr: ceph_health_detail{name="OSD_FULL"} == 1
+          for: 1m
+          labels: { severity: critical }
+          annotations:
+            summary: "An OSD is full: writes are blocked"
+            description: "Clients get ENOSPC. See 'ceph osd df' and 'ceph osd tree'."
+            runbook: runbooks/ceph-faults.md#full
+        - alert: CephOSDFlagsLeftSet
+          expr: (ceph_osd_flag_noout + ceph_osd_flag_norecover + ceph_osd_flag_nobackfill + ceph_osd_flag_norebalance) > 0
+          for: 1h
+          labels: { severity: warning }
+          annotations:
+            summary: "Maintenance OSD flags have been set for over an hour"
+            description: "Check 'ceph osd dump | grep flags'. Forgotten flags stop recovery or rebalancing."
+            runbook: runbooks/ceph-faults.md#flags
+    - name: ceph.pgs
+      rules:
+        - alert: CephPGsDamaged
+          expr: ceph_health_detail{name=~"PG_DAMAGED|OSD_SCRUB_ERRORS|OSD_TOO_MANY_REPAIRS"} == 1
+          for: 5m
+          labels: { severity: critical }
+          annotations:
+            summary: "Placement group(s) have inconsistent data"
+            description: "Run 'ceph health detail' and 'rados list-inconsistent-obj <pgid>' before repairing."
+            runbook: runbooks/ceph-faults.md#inconsistent
+        - alert: CephPGsUnclean
+          expr: ceph_pool_metadata * on(pool_id) group_right(name) (ceph_pg_total - ceph_pg_clean) > 0
+          for: 15m
+          labels: { severity: warning }
+          annotations:
+            summary: "Pool {{ $labels.name }} has {{ $value }} unclean PGs for 15 minutes"
+            description: "PGs are degraded, recovering or waiting. Check 'ceph pg dump_stuck' and OSD flags."
+            runbook: runbooks/ceph-faults.md#degraded
+        - alert: CephPGsInactive
+          expr: ceph_pool_metadata * on(pool_id) group_right(name) (ceph_pg_total - ceph_pg_active) > 0
+          for: 5m
+          labels: { severity: critical }
+          annotations:
+            summary: "Pool {{ $labels.name }} has {{ $value }} inactive PGs: I/O to them is blocked"
+            runbook: runbooks/ceph-faults.md#degraded
+    - name: ceph.mds
+      rules:
+        - alert: CephFilesystemInsufficientStandby
+          expr: ceph_health_detail{name="MDS_INSUFFICIENT_STANDBY"} == 1
+          for: 1m
+          labels: { severity: warning }
+          annotations:
+            summary: "CephFS has no standby MDS left"
+            description: "The next MDS failure takes the checkpoint filesystem offline. Check 'ceph fs status'."
+            runbook: runbooks/ceph-faults.md#host-down

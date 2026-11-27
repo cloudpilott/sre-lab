@@ -1,0 +1,7 @@
+# root@h100-03:~# dmesg -T
+[Sun Nov 15 21:48:43 2026] NVRM: loading NVIDIA UNIX Open Kernel Module for x86_64  580.95.05  Release Build
+[Sun Nov 15 21:48:45 2026] nvidia-nvswitch: Probing device 0000:05:00.0, Vendor Id = 0x10de, Device Id = 0x22a3
+[Sun Nov 15 21:48:48 2026] mlx5_core 0000:1a:00.0: firmware version: 28.45.1020
+[Sun Nov 15 21:48:50 2026] mlx5_core 0000:1a:00.0: Port module event: module 0, Cable plugged
+[Thu Nov 26 21:43:28 2026] NVRM: Xid (PCI:0000:ab:00): 94, pid=54296, name=python3, Contained: FBHUB (0x0). RST: No, D-RST: No
+[Thu Nov 26 21:43:29 2026] NVRM: Xid (PCI:0000:ab:00): 63, pid='<unknown>', name=<unknown>, Row Remapper: New row (0x0b4f61ac) marked for remapping, reset gpu to activate.

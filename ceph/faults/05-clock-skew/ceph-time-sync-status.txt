@@ -1,0 +1,26 @@
+# root@ceph-01:~# ceph time-sync-status
+{
+    "time_skew_status": {
+        "ceph-01": {
+            "skew": 0.0,
+            "latency": 0.0012100000000000001,
+            "health": "HEALTH_OK"
+        },
+        "ceph-02": {
+            "skew": 0.301108,
+            "latency": 0.00105,
+            "health": "HEALTH_WARN",
+            "details": "clock skew 0.30111s > max 0.05s"
+        },
+        "ceph-03": {
+            "skew": 7.5e-05,
+            "latency": 0.00123,
+            "health": "HEALTH_OK"
+        }
+    },
+    "timechecks": {
+        "epoch": 42,
+        "round": 1288,
+        "round_status": "finished"
+    }
+}

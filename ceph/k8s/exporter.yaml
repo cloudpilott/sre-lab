@@ -1,0 +1,80 @@
+# cephsim exporter: one pod pretends to be the active ceph-mgr's prometheus module (port 9283) for the simulated
+# 6-host / 24-OSD storage cluster. It runs on a real worker (w1/w2). The code and the fault state are ConfigMaps that
+# lab.sh creates (cephsim-code from ceph/cephsim.py, cephsim-state from ceph/state.json). Fault changes reach the pod
+# in ~1 minute (kubelet ConfigMap sync).
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ceph-sim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cephsim-exporter
+  namespace: ceph-sim
+  labels: { app: cephsim-exporter }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: cephsim-exporter }
+  template:
+    metadata:
+      labels: { app: cephsim-exporter }
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              # Real workers only: not the fake nodes, and not cp1 (busy with k3s-server).
+              - matchExpressions:
+                  - { key: type, operator: NotIn, values: [kwok] }
+                  - { key: node-role.kubernetes.io/control-plane, operator: DoesNotExist }
+      containers:
+        - name: exporter
+          image: python:3.12-alpine
+          command: [python, /app/cephsim.py, serve, --port, "9283"]
+          env:
+            - { name: CEPHSIM_STATE, value: /state/state.json }
+            - { name: PYTHONUNBUFFERED, value: "1" }
+          ports:
+            - { name: metrics, containerPort: 9283 }
+          readinessProbe:
+            httpGet: { path: /healthz, port: metrics }
+          resources:
+            requests: { cpu: 20m, memory: 32Mi }
+            limits:   { memory: 96Mi }
+          volumeMounts:
+            - { name: code,  mountPath: /app }
+            - { name: state, mountPath: /state }
+      volumes:
+        - name: code
+          configMap: { name: cephsim-code }
+        - name: state
+          configMap: { name: cephsim-state }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cephsim-exporter
+  namespace: ceph-sim
+  labels: { app: cephsim-exporter, app.kubernetes.io/name: ceph }
+spec:
+  selector: { app: cephsim-exporter }
+  ports:
+    - { name: metrics, port: 9283, targetPort: metrics }
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cephsim-exporter
+  namespace: ceph-sim
+spec:
+  jobLabel: app.kubernetes.io/name          # job="ceph", as in real ceph-mgr scrape configs
+  selector:
+    matchLabels: { app: cephsim-exporter }
+  endpoints:
+    - port: metrics
+      interval: 30s
+      honorLabels: true
+      metricRelabelings:
+        - { sourceLabels: [__name__], regex: cephsim_.*, action: drop }   # drill bookkeeping: no peeking

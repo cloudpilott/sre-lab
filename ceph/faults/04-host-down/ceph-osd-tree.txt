@@ -1,0 +1,33 @@
+# root@ceph-01:~# ceph osd tree
+ID   CLASS  WEIGHT     TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+ -1         167.66376  root default                               
+ -3          27.94396      host ceph-01                           
+  0   nvme    6.98599          osd.0         up   1.00000  1.00000
+  1   nvme    6.98599          osd.1         up   1.00000  1.00000
+  2   nvme    6.98599          osd.2         up   1.00000  1.00000
+  3   nvme    6.98599          osd.3         up   1.00000  1.00000
+ -5          27.94396      host ceph-02                           
+  4   nvme    6.98599          osd.4         up   1.00000  1.00000
+  5   nvme    6.98599          osd.5         up   1.00000  1.00000
+  6   nvme    6.98599          osd.6         up   1.00000  1.00000
+  7   nvme    6.98599          osd.7         up   1.00000  1.00000
+ -7          27.94396      host ceph-03                           
+  8   nvme    6.98599          osd.8         up   1.00000  1.00000
+  9   nvme    6.98599          osd.9         up   1.00000  1.00000
+ 10   nvme    6.98599          osd.10        up   1.00000  1.00000
+ 11   nvme    6.98599          osd.11        up   1.00000  1.00000
+ -9          27.94396      host ceph-04                           
+ 12   nvme    6.98599          osd.12      down   0.00000  1.00000
+ 13   nvme    6.98599          osd.13      down   0.00000  1.00000
+ 14   nvme    6.98599          osd.14      down   0.00000  1.00000
+ 15   nvme    6.98599          osd.15      down   0.00000  1.00000
+-11          27.94396      host ceph-05                           
+ 16   nvme    6.98599          osd.16        up   1.00000  1.00000
+ 17   nvme    6.98599          osd.17        up   1.00000  1.00000
+ 18   nvme    6.98599          osd.18        up   1.00000  1.00000
+ 19   nvme    6.98599          osd.19        up   1.00000  1.00000
+-13          27.94396      host ceph-06                           
+ 20   nvme    6.98599          osd.20        up   1.00000  1.00000
+ 21   nvme    6.98599          osd.21        up   1.00000  1.00000
+ 22   nvme    6.98599          osd.22        up   1.00000  1.00000
+ 23   nvme    6.98599          osd.23        up   1.00000  1.00000

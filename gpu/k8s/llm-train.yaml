@@ -1,0 +1,37 @@
+# A 64-GPU "training job": 8 pods, each needing a whole H100 node (8 GPUs + 8 IB HCAs).
+# KWOK marks the pods Running without starting containers, so the image is never pulled.
+# A StatefulSet rather than a Job: KWOK's stage-fast completes Job pods immediately.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ml
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: llm-train
+  namespace: ml
+  labels: { app: llm-train }
+spec:
+  serviceName: llm-train
+  replicas: 8
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels: { app: llm-train }
+  template:
+    metadata:
+      labels: { app: llm-train }
+    spec:
+      nodeSelector:
+        type: kwok
+        nvidia.com/gpu.product: NVIDIA-H100-80GB-HBM3
+      tolerations:
+        - { key: kwok.x-k8s.io/node, operator: Exists, effect: NoSchedule }
+        - { key: nvidia.com/gpu,     operator: Exists, effect: NoSchedule }
+      containers:
+        - name: trainer
+          image: registry.lab.internal/llm-train:2026.11
+          command: [torchrun, --nnodes=8, --nproc-per-node=8, train.py]
+          resources:
+            requests: { cpu: "96", memory: 1500Gi, nvidia.com/gpu: "8", rdma/ib: "8" }
+            limits:   { nvidia.com/gpu: "8", rdma/ib: "8" }

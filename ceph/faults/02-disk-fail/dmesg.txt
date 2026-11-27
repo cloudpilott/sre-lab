@@ -1,0 +1,25 @@
+# root@ceph-04:~# dmesg -T
+[Fri Oct 30 10:26:59 2026] Command line: BOOT_IMAGE=/vmlinuz-6.8.0-87-generic root=/dev/sda2 ro
+[Fri Oct 30 10:26:59 2026] Linux version 6.8.0-87-generic (buildd@lcy02-amd64-090) (x86_64-linux-gnu-gcc-13) #88-Ubuntu SMP PREEMPT_DYNAMIC
+[Fri Oct 30 10:27:00 2026] nvme nvme0: pci function 0000:c1:00.0
+[Fri Oct 30 10:27:00 2026] nvme nvme1: pci function 0000:c2:00.0
+[Fri Oct 30 10:27:00 2026] nvme nvme2: pci function 0000:c3:00.0
+[Fri Oct 30 10:27:00 2026] nvme nvme3: pci function 0000:c4:00.0
+[Fri Oct 30 10:27:01 2026] nvme nvme0: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:01 2026] nvme nvme1: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:01 2026] nvme nvme2: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:01 2026] nvme nvme3: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:05 2026] mlx5_core 0000:41:00.0 ens1f0np0: Link up
+[Fri Oct 30 10:27:05 2026] mlx5_core 0000:41:00.1 ens1f1np1: Link up
+[Fri Oct 30 10:27:08 2026] Bridge firewalling registered
+[Fri Oct 30 10:27:11 2026] systemd[1]: Started ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7.target.
+[Fri Nov 27 06:45:18 2026] nvme nvme1: I/O tag 718 (02ce) opcode 0x1 (I/O Cmd) QID 12 timeout, aborting req_op:WRITE(1) size:131072
+[Fri Nov 27 06:45:28 2026] nvme nvme1: Abort status: 0x371
+[Fri Nov 27 06:45:48 2026] nvme nvme1: I/O tag 718 (02ce) opcode 0x1 (I/O Cmd) QID 12 timeout, reset controller
+[Fri Nov 27 06:45:53 2026] nvme nvme1: Does your device have a faulty power saving mode enabled?
+[Fri Nov 27 06:45:53 2026] nvme nvme1: controller is down; will reset: CSTS=0xffffffff, PCI_STATUS=0xffff
+[Fri Nov 27 06:45:54 2026] nvme 0000:c2:00.0: Unable to change power state from D3cold to D0, device inaccessible
+[Fri Nov 27 06:45:55 2026] nvme nvme1: Disabling device after reset failure: -19
+[Fri Nov 27 06:45:56 2026] nvme1n1: detected capacity change from 15002931888 to 0
+[Fri Nov 27 06:45:57 2026] I/O error, dev nvme1n1, sector 9311616528 op 0x1:(WRITE) flags 0x8800 phys_seg 32 prio class 2
+[Fri Nov 27 06:45:58 2026] Buffer I/O error on dev dm-1, logical block 0, async page read

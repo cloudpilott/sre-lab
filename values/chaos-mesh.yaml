@@ -1,0 +1,12 @@
+chaosDaemon:
+  runtime: containerd
+  socketPath: /run/k3s/containerd/containerd.sock   # k3s-specific path
+controllerManager:
+  replicaCount: 1
+dashboard:
+  securityMode: false        # lab only: no RBAC token needed in the UI
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - name: chaos.__DOMAIN__

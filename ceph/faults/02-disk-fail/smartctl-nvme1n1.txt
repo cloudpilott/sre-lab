@@ -1,0 +1,5 @@
+# root@ceph-04:~# smartctl -a /dev/nvme1n1
+smartctl 7.4 2023-08-01 r5530 [x86_64-linux-6.8.0-87-generic] (local build)
+Copyright (C) 2002-23, Bruce Allen, Christian Franke, www.smartmontools.org
+
+Smartctl open device: /dev/nvme1n1 failed: No such device

@@ -1,0 +1,23 @@
+replicaCount: 2
+resources:
+  requests: { cpu: 50m, memory: 32Mi }
+  limits:   { memory: 128Mi }
+hpa:
+  enabled: true
+  maxReplicas: 6
+  cpu: 70
+serviceMonitor:
+  enabled: true
+  interval: 15s
+# Flip these during drills:  helm upgrade podinfo podinfo/podinfo -n demo --reuse-values --set faults.error=true
+faults:
+  error: false
+  delay: false
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: podinfo.__DOMAIN__
+      paths:
+        - path: /
+          pathType: ImplementationSpecific

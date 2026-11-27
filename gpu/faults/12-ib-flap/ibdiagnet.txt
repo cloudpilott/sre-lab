@@ -1,0 +1,27 @@
+# root@h100-03:~# ibdiagnet
+Loading IBDIAG from: /usr/lib/x86_64-linux-gnu/ibdiag2.1
+-I- Using port 1 as the local port
+-I- Discovering ... 80 nodes (16 Switches & 64 CAs) discovered.
+
+-I- Fabric Discover finished
+-I- Duplicated GUIDs detection finished successfully
+
+-I- Links Check
+-I- Links Check finished successfully
+
+-I- Links Speed/Width Check
+-I- Links Speed/Width Check finished successfully
+
+-I- PM Counters Check (thresholds from ibdiag config)
+-W- lid=0x0025 guid=0x946dae030041c0de dev=4129 Port=1 "h100-03 mlx5_5"  Performance counter: link_downed_counter Value=9 (threshold=3)
+
+-I- Stage                     Warnings   Errors     Comment
+-I- Discovery                 0          0
+-I- Lids Check                0          0
+-I- Links Check               0          0         
+-I- Links Speed/Width Check   0          0
+-I- PM Counters               1          0
+-I- Routing                   0          0
+
+-I- CA ports: 64/64 Active
+-I- Note: PortXmitWait (congestion) is not an error and is not checked here; read it with perfquery.

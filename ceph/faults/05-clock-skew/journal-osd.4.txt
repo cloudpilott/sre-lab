@@ -1,0 +1,4 @@
+# root@ceph-02:~# journalctl -u ceph-osd@4
+Oct 30 11:00:40 ceph-02 Started Ceph osd.4 for 9985a696-36f7-4dcc-a63b-cbf2f92d64f7.
+Oct 30 11:00:52 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-4[19992]: osd.4 3990 load_pgs opened 94 pgs
+Oct 30 11:00:53 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-4[19992]: osd.4 3990 done with init, starting boot process

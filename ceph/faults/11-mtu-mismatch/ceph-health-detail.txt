@@ -1,0 +1,68 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_WARN 4 osds down; 1 host (4 osds) down; Slow OSD heartbeats on back (longest 20870.400ms); Degraded data redundancy: 5010429/29993304 objects degraded (16.705%), 417 pgs degraded, 417 pgs undersized
+[WRN] OSD_DOWN: 4 osds down
+    osd.12 (root=default,host=ceph-04) is down
+    osd.13 (root=default,host=ceph-04) is down
+    osd.14 (root=default,host=ceph-04) is down
+    osd.15 (root=default,host=ceph-04) is down
+[WRN] OSD_HOST_DOWN: 1 host (4 osds) down
+    host ceph-04 (root=default) (4 osds) is down
+[WRN] OSD_SLOW_PING_TIME_BACK: Slow OSD heartbeats on back (longest 20870.400ms)
+    Slow OSD heartbeats on back from osd.14 [ceph-04] to osd.9 [ceph-03] 20870.400 msec
+    Slow OSD heartbeats on back from osd.15 [ceph-04] to osd.3 [ceph-01] 18830.400 msec
+    Slow OSD heartbeats on back from osd.12 [ceph-04] to osd.16 [ceph-05] 17845.200 msec
+    Slow OSD heartbeats on back from osd.12 [ceph-04] to osd.10 [ceph-03] 16188.000 msec
+    Slow OSD heartbeats on back from osd.13 [ceph-04] to osd.21 [ceph-06] 15717.600 msec
+    Slow OSD heartbeats on back from osd.13 [ceph-04] to osd.16 [ceph-05] 14180.400 msec
+[WRN] PG_DEGRADED: Degraded data redundancy: 5010429/29993304 objects degraded (16.705%), 417 pgs degraded, 417 pgs undersized
+    pg 1.0 is active+undersized+degraded, acting [10,1]
+    pg 2.1 is active+undersized+degraded, acting [23,11]
+    pg 2.5 is active+undersized+degraded, acting [22,6]
+    pg 2.6 is active+undersized+degraded, acting [6,22]
+    pg 2.7 is active+undersized+degraded, acting [9,22]
+    pg 2.9 is active+undersized+degraded, acting [3,10]
+    pg 2.a is active+undersized+degraded, acting [22,2]
+    pg 2.b is active+undersized+degraded, acting [8,16]
+    pg 2.f is active+undersized+degraded, acting [18,2]
+    pg 2.14 is active+undersized+degraded, acting [17,4]
+    pg 2.15 is active+undersized+degraded, acting [21,10]
+    pg 2.16 is active+undersized+degraded, acting [18,20]
+    pg 2.18 is active+undersized+degraded, acting [21,4]
+    pg 2.1e is active+undersized+degraded, acting [3,10]
+    pg 2.1f is active+undersized+degraded, acting [9,5]
+    pg 2.21 is active+undersized+degraded, acting [17,4]
+    pg 2.24 is active+undersized+degraded, acting [11,18]
+    pg 2.28 is active+undersized+degraded, acting [23,17]
+    pg 2.2b is active+undersized+degraded, acting [8,20]
+    pg 2.2c is active+undersized+degraded, acting [8,18]
+    pg 2.2d is active+undersized+degraded, acting [16,6]
+    pg 2.2e is active+undersized+degraded, acting [1,11]
+    pg 2.2f is active+undersized+degraded, acting [5,18]
+    pg 2.31 is active+undersized+degraded, acting [8,2]
+    pg 2.32 is active+undersized+degraded, acting [9,18]
+    pg 2.34 is active+undersized+degraded, acting [3,18]
+    pg 2.35 is active+undersized+degraded, acting [19,11]
+    pg 2.37 is active+undersized+degraded, acting [21,5]
+    pg 2.38 is active+undersized+degraded, acting [2,7]
+    pg 2.39 is active+undersized+degraded, acting [19,2]
+    pg 2.3b is active+undersized+degraded, acting [1,21]
+    pg 2.3c is active+undersized+degraded, acting [2,6]
+    pg 2.3f is active+undersized+degraded, acting [1,21]
+    pg 2.40 is active+undersized+degraded, acting [18,7]
+    pg 2.42 is active+undersized+degraded, acting [7,11]
+    pg 2.47 is active+undersized+degraded, acting [17,21]
+    pg 2.48 is active+undersized+degraded, acting [11,3]
+    pg 2.4b is active+undersized+degraded, acting [0,6]
+    pg 2.4c is active+undersized+degraded, acting [20,0]
+    pg 2.4f is active+undersized+degraded, acting [8,7]
+    pg 2.56 is active+undersized+degraded, acting [19,8]
+    pg 2.57 is active+undersized+degraded, acting [21,6]
+    pg 2.59 is active+undersized+degraded, acting [21,2]
+    pg 2.5b is active+undersized+degraded, acting [2,20]
+    pg 2.5c is active+undersized+degraded, acting [1,17]
+    pg 2.5e is active+undersized+degraded, acting [7,11]
+    pg 2.62 is active+undersized+degraded, acting [10,3]
+    pg 2.65 is active+undersized+degraded, acting [5,16]
+    pg 2.67 is active+undersized+degraded, acting [18,10]
+    pg 2.68 is active+undersized+degraded, acting [7,0]
+    ...

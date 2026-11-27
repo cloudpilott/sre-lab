@@ -1,0 +1,14 @@
+# root@ceph-02:~# chronyc tracking
+Reference ID    : 0A0A0001 (10.10.0.1)
+Stratum         : 3
+Ref time (UTC)  : Thu Nov 26 20:04:09 2026
+System time     : 0.000012932 seconds slow of NTP time
+Last offset     : -0.000004113 seconds
+RMS offset      : 0.000018242 seconds
+Frequency       : 12.104 ppm slow
+Residual freq   : -0.000 ppm
+Skew            : 0.009 ppm
+Root delay      : 0.000398221 seconds
+Root dispersion : 0.000231004 seconds
+Update interval : 1030.8 seconds
+Leap status     : Normal

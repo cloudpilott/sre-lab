@@ -1,0 +1,12 @@
+# root@ceph-01:~# ceph df
+--- RAW STORAGE ---
+CLASS     SIZE    AVAIL    USED  RAW USED  %RAW USED
+nvme   168 TiB   69 TiB  98 TiB    98 TiB      58.57
+TOTAL  168 TiB   69 TiB  98 TiB    98 TiB      58.57
+
+--- POOLS ---
+POOL              ID  PGS   STORED  OBJECTS     USED  %USED  MAX AVAIL
+.mgr               1    1  4.1 MiB        2   12 MiB   0.00     19 TiB
+rbd                2  256  5.2 TiB    1.35M   15 TiB  21.49     19 TiB
+cephfs.ckpt.data   3  512   27 TiB    7.02M   80 TiB  58.68     19 TiB
+cephfs.ckpt.meta   4   64  330 GiB    1.63M  990 GiB   1.68     19 TiB

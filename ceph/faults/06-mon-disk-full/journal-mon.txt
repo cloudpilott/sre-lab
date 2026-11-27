@@ -1,0 +1,13 @@
+# root@ceph-02:~# journalctl -u ceph-mon
+Oct 30 11:00:20 ceph-02 Started Ceph mon.ceph-02 for 9985a696-36f7-4dcc-a63b-cbf2f92d64f7.
+Oct 30 11:00:25 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon) e3 handle_conf_change mon_allow_pool_delete
+Nov 27 01:45:59 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon).data_health(42) update_stats avail 29% total 439 GiB, used 311 GiB, avail 127 GiB
+Nov 27 02:45:59 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon).data_health(42) update_stats avail 21% total 439 GiB, used 346 GiB, avail 92 GiB
+Nov 27 03:45:59 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon).data_health(42) update_stats avail 14% total 439 GiB, used 377 GiB, avail 61 GiB
+Nov 27 04:45:59 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon).data_health(42) update_stats avail 9% total 439 GiB, used 399 GiB, avail 39 GiB
+Nov 27 05:45:59 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon).data_health(42) update_stats avail 6% total 439 GiB, used 412 GiB, avail 26 GiB
+Nov 27 06:45:58 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: log_channel(cluster) log [ERR] : reached critical levels of available space on local monitor storage -- shutdown!
+Nov 27 06:45:59 ceph-02 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-mon-ceph-02[30213]: mon.ceph-02@1(peon) e3 *** Got Signal Interrupt ***
+Nov 27 06:45:59 ceph-02 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@mon.ceph-02.service: Deactivated successfully.
+Nov 27 06:46:09 ceph-02 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@mon.ceph-02.service: Main process exited, code=exited, status=28/n/a
+Nov 27 06:47:09 ceph-02 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@mon.ceph-02.service: Start request repeated too quickly.

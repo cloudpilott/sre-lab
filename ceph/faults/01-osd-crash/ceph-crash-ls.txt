@@ -1,0 +1,3 @@
+# root@ceph-01:~# ceph crash ls
+ID                                                                ENTITY  NEW
+2026-11-26T19:45:59.324343Z_a10c9300-ea79-4026-a2ca-fadf7e2d5995  osd.13   *

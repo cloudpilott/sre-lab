@@ -1,0 +1,5 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_WARN 1 OSD(s) experiencing slow operations in BlueStore; 20 slow ops, oldest one blocked for 94 sec, osd.13 has slow ops
+[WRN] BLUESTORE_SLOW_OP_ALERT: 1 OSD(s) experiencing slow operations in BlueStore
+    osd.13 observed slow operation indications in BlueStore
+[WRN] SLOW_OPS: 20 slow ops, oldest one blocked for 94 sec, osd.13 has slow ops

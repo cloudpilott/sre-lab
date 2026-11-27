@@ -1,0 +1,12 @@
+# Break DNS resolution for podinfo pods (requires Chaos Mesh DNS server component, enabled by default).
+apiVersion: chaos-mesh.org/v1alpha1
+kind: DNSChaos
+metadata: { name: podinfo-dns, namespace: demo }
+spec:
+  action: error
+  mode: all
+  patterns: ["*"]
+  selector:
+    namespaces: [demo]
+    labelSelectors: { app.kubernetes.io/name: podinfo }
+  duration: "3m"

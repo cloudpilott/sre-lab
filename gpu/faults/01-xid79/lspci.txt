@@ -1,0 +1,17 @@
+# root@h100-03:~# lspci
+18:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+1a:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+2a:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+3a:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+3c:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+4d:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+5d:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+5e:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+9a:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+9c:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+ab:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev ff)
+ba:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+bc:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+cc:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]
+db:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+dc:00.0 Infiniband controller: Mellanox Technologies MT2910 Family [ConnectX-7]

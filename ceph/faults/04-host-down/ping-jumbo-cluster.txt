@@ -1,0 +1,2 @@
+# root@ceph-04:~# ping -c 3 -M do -s 8972 10.20.0.11
+ssh: connect to host ceph-04 port 22: No route to host

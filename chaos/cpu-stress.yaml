@@ -1,0 +1,12 @@
+# Saturate CPU in one pod for 5 minutes. Watch HPA react and throttling metrics climb.
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata: { name: podinfo-cpu, namespace: demo }
+spec:
+  mode: one
+  selector:
+    namespaces: [demo]
+    labelSelectors: { app.kubernetes.io/name: podinfo }
+  stressors:
+    cpu: { workers: 2, load: 90 }
+  duration: "5m"

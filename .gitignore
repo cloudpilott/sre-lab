@@ -1,0 +1,17 @@
+# Secrets and machine-specific files: lab.sh recreates these on every machine.
+kubeconfig
+.grafana-password
+
+# Runtime fault state of the simulators (recreated by ./lab.sh gpu|ceph up / clear).
+gpu/state.json
+ceph/state.json
+
+# Logs (the OpenStack deploy log can contain generated passwords).
+*.log
+
+# Python / editor noise
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/

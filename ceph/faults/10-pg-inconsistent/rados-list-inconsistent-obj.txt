@@ -1,0 +1,57 @@
+# root@ceph-01:~# rados list-inconsistent-obj 3.e --format=json-pretty
+{
+    "epoch": 4127,
+    "inconsistents": [
+        {
+            "object": {
+                "name": "1000000b2c1.00003f90",
+                "nspace": "",
+                "locator": "",
+                "snap": "head",
+                "version": 88213
+            },
+            "errors": [],
+            "union_shard_errors": [
+                "read_error"
+            ],
+            "selected_object_info": {
+                "oid": {
+                    "oid": "1000000b2c1.00003f90",
+                    "key": "",
+                    "snapid": -2,
+                    "hash": 56930486,
+                    "max": 0,
+                    "pool": 3,
+                    "namespace": ""
+                },
+                "size": 4194304
+            },
+            "shards": [
+                {
+                    "osd": 18,
+                    "primary": true,
+                    "errors": [],
+                    "size": 4194304,
+                    "omap_digest": "0xffffffff",
+                    "data_digest": "0x6158731a"
+                },
+                {
+                    "osd": 1,
+                    "primary": false,
+                    "errors": [],
+                    "size": 4194304,
+                    "omap_digest": "0xffffffff",
+                    "data_digest": "0x6158731a"
+                },
+                {
+                    "osd": 13,
+                    "primary": false,
+                    "errors": [
+                        "read_error"
+                    ],
+                    "size": 4194304
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+# root@h100-03:~# nvidia-smi -q -i 5
+
+==============NVSMI LOG==============
+
+Timestamp                                 : Thu Nov 26 22:08:28 2026
+Driver Version                            : 580.95.05
+CUDA Version                              : 13.0
+
+Attached GPUs                             : 7
+Unable to determine the device handle for gpu 0000:AB:00.0: Unknown Error

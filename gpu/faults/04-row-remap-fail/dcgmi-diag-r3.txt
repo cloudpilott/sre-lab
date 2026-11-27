@@ -1,0 +1,33 @@
+# root@h100-03:~# dcgmi diag -r 3   (after kubectl drain)
+Successfully ran diagnostic for group.
++---------------------------+------------------------------------------------+
+| Diagnostic                | Result                                         |
++===========================+================================================+
+|-----  Metadata  ----------+------------------------------------------------|
+| DCGM Version              | 4.4.1                                          |
+| Driver Version Detected   | 580.95.05                                      |
+| GPU Device IDs Detected   | 2330,2330,2330,2330,2330,2330,2330,2330        |
+|-----  Deployment  --------+------------------------------------------------|
+| Denylist                  | Pass                                           |
+| NVML Library              | Pass                                           |
+| CUDA Main Library         | Pass                                           |
+| Permissions and OS Blocks | Pass                                           |
+| Persistence Mode          | Pass                                           |
+| Environment Variables     | Pass                                           |
+| Page Retirement/Row Remap | Fail - GPUs: 5                                 |
+| Graphics Processes        | Pass                                           |
+| Inforom                   | Pass                                           |
++-----  Integration  -------+------------------------------------------------+
+| PCIe                      | Pass - All                                     |
++-----  Hardware  ----------+------------------------------------------------+
+| GPU Memory                | Fail - GPUs: 5                                 |
+| NVLink                    | Pass - All                                     |
++-----  Stress  ------------+------------------------------------------------+
+| Targeted Stress           | Pass - All                                     |
+| Targeted Power            | Pass - All                                     |
+| Memory Bandwidth          | Pass - All                                     |
+| Diagnostic                | Fail - GPUs: 5                                 |
++---------------------------+------------------------------------------------+
+
+Warning: GPU 5: row remap pending or failed; reset or RMA
+Warning: GPU 5: uncorrectable memory errors detected

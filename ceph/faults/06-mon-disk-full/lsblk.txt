@@ -1,0 +1,13 @@
+# root@ceph-02:~# lsblk
+NAME                                                                    MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda                                                                       8:0    0 447.1G  0 disk 
+├─sda1                                                                    8:1    0     1G  0 part /boot/efi
+└─sda2                                                                    8:2    0 446.1G  0 part /
+nvme0n1                                                                   259:0    0   7T  0 disk 
+└─ceph--7525b1ce-osd--block--b0c4872f 252:0    0   7T  0 lvm  
+nvme1n1                                                                   259:2    0   7T  0 disk 
+└─ceph--dca62272-osd--block--d38b6bda 252:1    0   7T  0 lvm  
+nvme2n1                                                                   259:4    0   7T  0 disk 
+└─ceph--0248b960-osd--block--6937692a 252:2    0   7T  0 lvm  
+nvme3n1                                                                   259:6    0   7T  0 disk 
+└─ceph--91929309-osd--block--6cfc73e1 252:3    0   7T  0 lvm  

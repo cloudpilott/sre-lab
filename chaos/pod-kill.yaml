@@ -1,0 +1,15 @@
+# Kill one podinfo pod every 2 minutes for 10 minutes. Does the SLO notice?
+apiVersion: chaos-mesh.org/v1alpha1
+kind: Schedule
+metadata: { name: podinfo-pod-kill, namespace: demo }
+spec:
+  schedule: "@every 2m"
+  type: PodChaos
+  historyLimit: 5
+  concurrencyPolicy: Forbid
+  podChaos:
+    action: pod-kill
+    mode: one
+    selector:
+      namespaces: [demo]
+      labelSelectors: { app.kubernetes.io/name: podinfo }

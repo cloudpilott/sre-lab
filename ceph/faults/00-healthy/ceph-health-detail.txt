@@ -1,0 +1,2 @@
+# root@ceph-01:~# ceph health detail
+HEALTH_OK

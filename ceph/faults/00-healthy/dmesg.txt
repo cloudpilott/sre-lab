@@ -1,0 +1,15 @@
+# root@ceph-04:~# dmesg -T
+[Fri Oct 30 10:26:59 2026] Command line: BOOT_IMAGE=/vmlinuz-6.8.0-87-generic root=/dev/sda2 ro
+[Fri Oct 30 10:26:59 2026] Linux version 6.8.0-87-generic (buildd@lcy02-amd64-090) (x86_64-linux-gnu-gcc-13) #88-Ubuntu SMP PREEMPT_DYNAMIC
+[Fri Oct 30 10:27:00 2026] nvme nvme0: pci function 0000:c1:00.0
+[Fri Oct 30 10:27:00 2026] nvme nvme1: pci function 0000:c2:00.0
+[Fri Oct 30 10:27:00 2026] nvme nvme2: pci function 0000:c3:00.0
+[Fri Oct 30 10:27:00 2026] nvme nvme3: pci function 0000:c4:00.0
+[Fri Oct 30 10:27:01 2026] nvme nvme0: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:01 2026] nvme nvme1: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:01 2026] nvme nvme2: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:01 2026] nvme nvme3: 128/0/0 default/read/poll queues
+[Fri Oct 30 10:27:05 2026] mlx5_core 0000:41:00.0 ens1f0np0: Link up
+[Fri Oct 30 10:27:05 2026] mlx5_core 0000:41:00.1 ens1f1np1: Link up
+[Fri Oct 30 10:27:08 2026] Bridge firewalling registered
+[Fri Oct 30 10:27:11 2026] systemd[1]: Started ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7.target.

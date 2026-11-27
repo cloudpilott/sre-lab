@@ -1,0 +1,2 @@
+# root@ceph-04:~# smartctl -a /dev/nvme0n1
+ssh: connect to host ceph-04 port 22: No route to host

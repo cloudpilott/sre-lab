@@ -1,0 +1,42 @@
+# Sloth turns this into recording rules + multi-window, multi-burn-rate alerts (PrometheusRule).
+# Verify metric names first in Prometheus: http_requests_total, http_request_duration_seconds_bucket
+apiVersion: sloth.slok.dev/v1
+kind: PrometheusServiceLevel
+metadata:
+  name: podinfo
+  namespace: demo
+spec:
+  service: podinfo
+  labels:
+    team: sre-lab
+  slos:
+    - name: availability
+      objective: 99.5
+      description: "99.5% of podinfo requests are not 5xx (30d window)."
+      sli:
+        events:
+          errorQuery: (sum(rate(http_requests_total{namespace="demo",status=~"5.."}[{{.window}}])) or vector(0))
+          totalQuery: sum(rate(http_requests_total{namespace="demo"}[{{.window}}]))
+      alerting:
+        name: PodinfoAvailabilityBurn
+        labels: { category: availability }
+        annotations:
+          runbook: "See runbooks/podinfo-errors.md"
+        pageAlert:   { labels: { severity: critical } }
+        ticketAlert: { labels: { severity: warning } }
+
+    - name: latency
+      objective: 99
+      description: "99% of podinfo requests complete in under 250ms."
+      sli:
+        events:
+          errorQuery: |
+            sum(rate(http_request_duration_seconds_count{namespace="demo"}[{{.window}}]))
+            -
+            sum(rate(http_request_duration_seconds_bucket{namespace="demo",le="0.25"}[{{.window}}]))
+          totalQuery: sum(rate(http_request_duration_seconds_count{namespace="demo"}[{{.window}}]))
+      alerting:
+        name: PodinfoLatencyBurn
+        labels: { category: latency }
+        pageAlert:   { labels: { severity: critical } }
+        ticketAlert: { labels: { severity: warning } }

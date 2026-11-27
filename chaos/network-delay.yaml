@@ -1,0 +1,12 @@
+# Add 300ms +/- 50ms latency to all podinfo pods for 5 minutes -> should burn the latency SLO.
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata: { name: podinfo-delay, namespace: demo }
+spec:
+  action: delay
+  mode: all
+  selector:
+    namespaces: [demo]
+    labelSelectors: { app.kubernetes.io/name: podinfo }
+  delay: { latency: "300ms", jitter: "50ms", correlation: "50" }
+  duration: "5m"

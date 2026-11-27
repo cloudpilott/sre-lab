@@ -1,0 +1,27 @@
+# root@ceph-01:~# ceph -s
+  cluster:
+    id:     9985a696-36f7-4dcc-a63b-cbf2f92d64f7
+    health: HEALTH_WARN
+            insufficient standby MDS daemons available
+            Degraded data redundancy: 3668718/29993304 objects degraded (12.232%), 308 pgs degraded, 308 pgs undersized
+
+  services:
+    mon: 3 daemons, quorum ceph-01,ceph-02,ceph-03 (age 3w)
+    mgr: ceph-01.plreuk(active, since 3w), standbys: ceph-02.arkjwm
+    mds: 1/1 daemons up
+    osd: 24 osds: 20 up (since 25m), 20 in (since 15m); 308 remapped pgs
+
+  data:
+    volumes: 1/1 healthy
+    pools:   4 pools, 833 pgs
+    objects: 10.00M objects, 32 TiB
+    usage:   82 TiB used, 58 TiB / 140 TiB avail
+    pgs:     3668718/29993304 objects degraded (12.232%)
+             525 active+clean
+             299 active+undersized+degraded+remapped+backfill_wait
+             9 active+undersized+degraded+remapped+backfilling
+
+  io:
+    client:   1.2 GiB/s rd, 2.0 GiB/s wr, 9.54k op/s rd, 8.25k op/s wr
+    recovery: 1.7 GiB/s, 473 objects/s
+

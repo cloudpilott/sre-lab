@@ -1,0 +1,23 @@
+# root@ceph-04:~# journalctl -u ceph-osd@13
+Oct 30 11:00:40 ceph-04 Started Ceph osd.13 for 9985a696-36f7-4dcc-a63b-cbf2f92d64f7.
+Oct 30 11:00:52 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: osd.13 3990 load_pgs opened 119 pgs
+Oct 30 11:00:53 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: osd.13 3990 done with init, starting boot process
+Nov 27 06:45:58 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: 12034: FAILED ceph_assert(head_obc)
+Nov 27 06:45:58 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: In function 'int PrimaryLogPG::recover_missing(const hobject_t&, eversion_t, int, PGBackend::RecoveryHandle*)' thread 7f2a1b7fe640 time 2026-11-26T19:45:59.324343Z
+Nov 27 06:45:59 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]:  ceph version 19.2.3 (e29cffbbc47807d251b39cf94582d56f6c8e8e4e) squid (stable)
+Nov 27 06:45:59 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]:  in thread 7f2a1b7fe640 thread_name:tp_osd_tp
+Nov 27 06:45:59 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: *** Caught signal (Aborted) **
+Nov 27 06:46:00 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Failed with result 'exit-code'.
+Nov 27 06:46:00 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Main process exited, code=exited, status=134/n/a
+Nov 27 06:46:11 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: 12034: FAILED ceph_assert(head_obc)
+Nov 27 06:46:12 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Scheduled restart job, restart counter is at 1.
+Nov 27 06:46:23 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: 12034: FAILED ceph_assert(head_obc)
+Nov 27 06:46:24 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Scheduled restart job, restart counter is at 2.
+Nov 27 06:46:35 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: 12034: FAILED ceph_assert(head_obc)
+Nov 27 06:46:36 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Scheduled restart job, restart counter is at 3.
+Nov 27 06:46:47 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: 12034: FAILED ceph_assert(head_obc)
+Nov 27 06:46:48 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Scheduled restart job, restart counter is at 4.
+Nov 27 06:46:59 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-13[3700]: ./src/osd/PrimaryLogPG.cc: 12034: FAILED ceph_assert(head_obc)
+Nov 27 06:47:00 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Scheduled restart job, restart counter is at 5.
+Nov 27 06:47:14 ceph-04 systemd[1]: Failed to start Ceph osd.13 for 9985a696-36f7-4dcc-a63b-cbf2f92d64f7.
+Nov 27 06:47:14 ceph-04 systemd[1]: ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7@osd.13.service: Start request repeated too quickly.

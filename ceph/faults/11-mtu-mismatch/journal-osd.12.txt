@@ -1,0 +1,22 @@
+# root@ceph-04:~# journalctl -u ceph-osd@12
+Oct 30 11:00:40 ceph-04 Started Ceph osd.12 for 9985a696-36f7-4dcc-a63b-cbf2f92d64f7.
+Oct 30 11:00:52 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 3990 load_pgs opened 112 pgs
+Oct 30 11:00:53 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 3990 done with init, starting boot process
+Nov 27 06:47:21 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 4127 heartbeat_check: no reply from 10.20.0.11:6810 osd.3 since back 2026-11-26T19:46:59.029164+0000 front 2026-11-26T19:47:20.618387+0000 (oldest deadline 2026-11-26T19:47:19.566224+0000)
+Nov 27 06:47:43 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [WRN] : Monitor daemon marked osd.12 down, but it is still running
+Nov 27 06:47:44 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [DBG] : map e4130 wrongly marked me down at e4129
+Nov 27 06:51:21 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 4127 heartbeat_check: no reply from 10.20.0.15:6804 osd.16 since back 2026-11-26T19:50:59.810792+0000 front 2026-11-26T19:51:20.074382+0000 (oldest deadline 2026-11-26T19:51:19.371631+0000)
+Nov 27 06:51:43 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [WRN] : Monitor daemon marked osd.12 down, but it is still running
+Nov 27 06:51:44 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [DBG] : map e4132 wrongly marked me down at e4131
+Nov 27 06:55:21 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 4127 heartbeat_check: no reply from 10.20.0.13:6806 osd.9 since back 2026-11-26T19:54:59.258560+0000 front 2026-11-26T19:55:20.346478+0000 (oldest deadline 2026-11-26T19:55:19.685942+0000)
+Nov 27 06:55:43 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [WRN] : Monitor daemon marked osd.12 down, but it is still running
+Nov 27 06:55:44 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [DBG] : map e4134 wrongly marked me down at e4133
+Nov 27 06:59:21 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 4127 heartbeat_check: no reply from 10.20.0.15:6808 osd.18 since back 2026-11-26T19:58:59.783878+0000 front 2026-11-26T19:59:20.078373+0000 (oldest deadline 2026-11-26T19:59:19.690593+0000)
+Nov 27 06:59:43 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [WRN] : Monitor daemon marked osd.12 down, but it is still running
+Nov 27 06:59:44 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [DBG] : map e4136 wrongly marked me down at e4135
+Nov 27 07:03:21 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 4127 heartbeat_check: no reply from 10.20.0.11:6804 osd.0 since back 2026-11-26T20:02:59.040032+0000 front 2026-11-26T20:03:20.433969+0000 (oldest deadline 2026-11-26T20:03:19.282229+0000)
+Nov 27 07:03:43 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [WRN] : Monitor daemon marked osd.12 down, but it is still running
+Nov 27 07:03:44 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [DBG] : map e4138 wrongly marked me down at e4137
+Nov 27 07:07:21 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: osd.12 4127 heartbeat_check: no reply from 10.20.0.13:6806 osd.9 since back 2026-11-26T20:06:59.389083+0000 front 2026-11-26T20:07:20.131778+0000 (oldest deadline 2026-11-26T20:07:19.363357+0000)
+Nov 27 07:07:43 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [WRN] : Monitor daemon marked osd.12 down, but it is still running
+Nov 27 07:07:44 ceph-04 ceph-9985a696-36f7-4dcc-a63b-cbf2f92d64f7-osd-12[20172]: log_channel(cluster) log [DBG] : map e4140 wrongly marked me down at e4139
