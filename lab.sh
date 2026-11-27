@@ -137,18 +137,54 @@ apps() {
 }
 
 status() {
-  local d; d="$(domain)"
+  local d s=http; d="$(domain)"
   kubectl get nodes
+  # https once ./lab.sh tls has installed the trusted wildcard cert (and it still matches cp1's current IP)
+  kubectl -n kube-system get secret lab-wildcard-tls >/dev/null 2>&1 && [[ -f .tls/domain && "$(cat .tls/domain)" == "$d" ]] && s=https
   cat <<EOF
 
-  Grafana       http://grafana.$d        (user: admin, password in .grafana-password)
-  Prometheus    http://prometheus.$d
-  Alertmanager  http://alertmanager.$d
-  Chaos Mesh    http://chaos.$d
-  podinfo       http://podinfo.$d
+  Grafana       $s://grafana.$d        (user: admin, password in .grafana-password)
+  Prometheus    $s://prometheus.$d
+  Alertmanager  $s://alertmanager.$d
+  Chaos Mesh    $s://chaos.$d
+  podinfo       $s://podinfo.$d
 
   export KUBECONFIG=$KCFG
 EOF
+  [[ $s == https ]] || echo "  (HTTPS with a trusted certificate: ./lab.sh tls)"
+}
+
+# ---- HTTPS: one trusted wildcard certificate as Traefik's default certificate --------------------------------
+# k3s' Traefik already serves every Ingress on :443, but with its self-signed "TRAEFIK DEFAULT CERT".
+# mkcert (a local CA trusted by macOS / browsers) signs *.<cp1-ip>.nip.io; the CA's private key stays on the Mac.
+# Rerun after cp1's IP changes (the hostnames change with it).
+tls() {
+  need mkcert; cluster_up || die "cluster not reachable; run: ./lab.sh start"
+  [[ -f "$(mkcert -CAROOT)/rootCA.pem" ]] || die "run 'mkcert -install' once first (adds mkcert's local CA to the macOS trust store; asks for your password)"
+  local d dir="$PWD/.tls"; d="$(domain)"
+  mkdir -p "$dir"; chmod 700 "$dir"
+  log "Wildcard certificate for *.$d"
+  mkcert -cert-file "$dir/tls.crt" -key-file "$dir/tls.key" "*.$d" "$d"
+  echo "$d" > "$dir/domain"
+  kubectl -n kube-system create secret tls lab-wildcard-tls --cert="$dir/tls.crt" --key="$dir/tls.key" \
+    --dry-run=client -o yaml | kubectl apply -f -
+  kubectl apply -f - <<EOF
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default            # Traefik's default certificate for every HTTPS route without its own
+  namespace: kube-system
+spec:
+  defaultCertificate:
+    secretName: lab-wildcard-tls
+EOF
+  log "Checking HTTPS (Traefik reloads the certificate in a few seconds)"
+  local n ok; sleep 5
+  for n in grafana prometheus alertmanager chaos podinfo; do
+    ok="$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "https://$n.$d/")" || ok="TLS error"
+    printf '  https://%-28s %s\n' "$n.$d" "$ok"
+  done
+  echo "Safari/Chrome trust it now; restart Firefox once. Expires: $(openssl x509 -enddate -noout -in "$dir/tls.crt" | cut -d= -f2)"
 }
 
 load()  { need k6; k6 run -e BASE_URL="http://podinfo.$(domain)" load/podinfo.js; }
@@ -427,6 +463,7 @@ help() {
 ./lab.sh all              vms + cluster + platform + apps + 'baseline' snapshot
 ./lab.sh vms | cluster | platform | apps    run a single stage
 ./lab.sh status           show URLs
+./lab.sh tls              HTTPS: trusted wildcard cert (mkcert) for Grafana, Prometheus, ...
 ./lab.sh load             run k6 load test against podinfo
 ./lab.sh chaos [name]     list or run a Chaos Mesh experiment
 ./lab.sh snapshot [name] | restore <name>

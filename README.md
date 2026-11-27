@@ -37,6 +37,7 @@ local network. Allow it, or `kubectl` cannot reach the VMs (System Settings → 
 | Command | What it does |
 |---|---|
 | `./lab.sh stop` / `start` | Pause the VMs to get RAM and battery back |
+| `./lab.sh tls` | Trusted HTTPS for all lab URLs (mkcert wildcard cert; run `mkcert -install` once, rerun if cp1's IP changes) |
 | `./lab.sh snapshot before-drill` | Save a known-good state |
 | `./lab.sh restore baseline` | Roll back after you broke something |
 | `./lab.sh load` | k6 ramp to 50 VUs against podinfo |

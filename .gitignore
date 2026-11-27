@@ -1,6 +1,7 @@
 # Secrets and machine-specific files: lab.sh recreates these on every machine.
 kubeconfig
 .grafana-password
+.tls/
 
 # Runtime fault state of the simulators (recreated by ./lab.sh gpu|ceph up / clear).
 gpu/state.json
