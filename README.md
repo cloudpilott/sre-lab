@@ -3,7 +3,7 @@
 A 3-node Kubernetes (k3s) cluster in Ubuntu VMs on your Mac, plus a working SRE toolchain:
 metrics, logs, dashboards, SLOs with burn-rate alerts, chaos engineering and load testing.
 
-![Architecture: Mac host, Multipass VMs, k3s workloads, and the simulated GPU and Ceph fleets](docs/architecture.jpg)
+![Architecture: Mac host, Multipass VMs, k3s workloads, and the simulated GPU and Ceph fleets](docs/architecture.png)
 
 ```
 macOS (M2, 16 GB)
