@@ -101,3 +101,6 @@ OpenStack 2026.2 via Kolla-Ansible in a 4th VM, `os-aio` (4 vCPU / 10 GB). Run i
 ```
 Compute is emulated (`virt_type=qemu`; the M2 has no nested virtualization), so use tiny CirrOS guests.
 Files: `openstack/aio.sh` (runs inside the VM), `openstack/globals.yml.tpl`. Full SOP: section 10 of the lab SOP doc.
+
+---
+© 2026 cloudpilott. All rights reserved. Personal portfolio project, not accepting contributions.
